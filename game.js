@@ -75,6 +75,7 @@ export class Game extends Phaser.Scene {
     if (elapsedTime >= 20000) {
       this.scoreText.setText(`Final Score: ${this.score}`);
       this.circle.disableInteractive();
+      this.circle.setVisible(false);
       this.timeText.setText('');
       this.moveCircleTimer.remove(false);
       this.globoTimer.remove(false);
