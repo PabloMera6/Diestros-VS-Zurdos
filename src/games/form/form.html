@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario y Juegos</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+</head>
+<body>
+  <form id="formulario" action="/guardarDatos" method="post">
+    <label for="edad">Edad:</label>
+    <input type="number" id="edad" name="edad" required>
+
+    <label for="manoFavorita">Mano Hábil:</label>
+    <select id="manoFavorita" name="manoFavorita" required>
+      <option value="derecha">Derecha</option>
+      <option value="izquierda">Izquierda</option>
+    </select>
+
+    <label for="manoFavorita">Mano con la que usas el móvil:</label>
+    <select id="manoFavorita" name="manoFavorita" required>
+      <option value="derecha">Derecha</option>
+      <option value="izquierda">Izquierda</option>
+    </select>
+
+    <label for="horasUsoMovil">Horas de Uso del Móvil:</label>
+    <select id="horasUsoMovil" name="horasUsoMovil" required>
+      <option value="<1">Menos de 1 hora</option>
+      <option value="1-3">Entre 1 y 3 horas</option>
+      <option value="3-5">Entre 3 y 5 horas</option>
+      <option value="5-8">Entre 5 y 8 horas</option>
+      <option value=">8">Más de 8 horas</option>
+    </select>
+
+    <button type="submit">Comenzar a jugar</button>
+  </form>
+
+  <script src="src/games/form/form.js"></script>
+</body>
+</html>
