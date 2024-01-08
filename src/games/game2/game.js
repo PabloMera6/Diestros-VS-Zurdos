@@ -47,33 +47,41 @@ export class Game extends Phaser.Scene {
         if (!this.lightsGroup) {
             this.lightsGroup = this.add.group();
         }
-
+    
+        let lightsRemaining = 4;
+    
         // Inicializa el evento para encender las luces uno por uno
         for (let i = 0; i < 4; i++) {
             this.time.delayedCall(i * 1000, () => {
-                const light = this.lightsGroup.create(100 + i * 150, 300, 'redLight');
-                light.setAlpha(0.5);
-                light.setVisible(true);
+                // Verifica si la escena aún está en el estado correcto para permitir la creación del globo
+                if (this.scene.isActive() && lightsRemaining > 0) {
+                    const light = this.lightsGroup.create(100 + i * 150, 300, 'redLight');
+                    light.setAlpha(0.5);
+                    light.setVisible(true);
+                    lightsRemaining--;
+    
+                    // Si se crea el último globo, activa la interactividad del clic
+                    if (lightsRemaining === 0) {
+                        this.input.once('pointerdown', this.handleEarlyClick, this);
+                    }
+                }
             });
         }
-
-        // Usa el método once en lugar de on
-        this.input.on('pointerdown', this.handleEarlyClick, this);
-
+    
         // Inicializa el evento para desaparecer los globos después de un tiempo aleatorio
         // Guarda el evento en una variable
         this.hideEvent = this.time.delayedCall(5000, () => {
             this.lightsGroup.children.iterate((light) => {
                 this.lightsGroup.killAndHide(light);
             });
-
+    
             this.startTime = this.time.now;
-
+    
             this.input.off('pointerdown', this.handleEarlyClick, this);
-
             this.input.on('pointerdown', this.handleReactionClick, this);
         });
     }
+    
 
     handleEarlyClick() {
         // Bloquea el input y muestra el mensaje de error
@@ -93,9 +101,6 @@ export class Game extends Phaser.Scene {
             this.lightsGroup.clear(true, true);
         
         }
-        
-
-
         // Limpia los globos y prepara el próximo intento
         this.lightsGroup.children.each(function (child) {
             child.destroy();
@@ -112,6 +117,12 @@ export class Game extends Phaser.Scene {
             fontSize: '24px',
             fill: '#fff',
         }).setOrigin(0.5).setInteractive();
+
+        /*if(this.currentAttempt === this.attempts) {
+            this.nextAttemptText.setText('Finalizar');
+        } else {
+            this.nextAttemptText.setText('Siguiente intento');
+        }*/
 
         // Cuando el jugador hace clic en el botón, oculta el mensaje de error y comienza el próximo intento
         this.nextButton.on('pointerdown', () => {
@@ -172,12 +183,12 @@ export class Game extends Phaser.Scene {
 
         // Muestra el mejor tiempo al final del juego
         if (this.bestTime !== Number.MAX_SAFE_INTEGER) {
-            this.add.text(400, 300, `Mejor Tiempo: ${this.bestTime}ms`, {
+            this.add.text(400, 300, `Su mejor tiempo es de: ${this.bestTime} ms`, {
                 fontSize: '32px',
                 fill: '#fff',
             }).setOrigin(0.5);
         } else {
-            this.add.text(400, 300, 'Sin intentos exitosos', {
+            this.add.text(400, 300, 'No ha tenido intentos exitosos, por lo que su tiempo es de 2000 ms', {
                 fontSize: '32px',
                 fill: '#fff',
             }).setOrigin(0.5);
