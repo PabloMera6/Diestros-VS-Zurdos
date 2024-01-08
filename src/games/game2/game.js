@@ -10,15 +10,16 @@ export class Game extends Phaser.Scene {
     create() {
         this.attempts = 3;
         this.currentAttempt = 0;
-        this.bestTime = Number.MAX_SAFE_INTEGER;
-
-        // Elemento invisible para bloquear el input durante ciertos momentos
-        this.inputGuard = this.add.rectangle(-100, -100, 1, 1);
-        this.inputGuard.visible = false;
-        this.inputGuard.setInteractive();
+        this.bestTime = 2000;
 
         // Texto para mostrar el intento actual
         this.attemptText = this.add.text(400, 50, '', {
+            fontSize: '24px',
+            fill: '#fff',
+        }).setOrigin(0.5);
+
+        // Texto para mostrar el error
+        this.errorText = this.add.text(400, 150, '', {
             fontSize: '24px',
             fill: '#fff',
         }).setOrigin(0.5);
@@ -28,15 +29,6 @@ export class Game extends Phaser.Scene {
             fontSize: '24px',
             fill: '#fff',
         }).setOrigin(0.5);
-
-        // Texto para el siguiente intento
-        this.nextAttemptText = this.add.text(400, 400, '', {
-            fontSize: '20px',
-            fill: '#fff',
-        }).setOrigin(0.5);
-        this.nextAttemptText.setInteractive();
-        this.nextAttemptText.on('pointerdown', this.continueGame, this);
-        this.nextAttemptText.setVisible(false);
 
         // Comienza el primer intento
         this.startNewAttempt();
@@ -84,12 +76,10 @@ export class Game extends Phaser.Scene {
     
 
     handleEarlyClick() {
-        // Bloquea el input y muestra el mensaje de error
-        this.inputGuard.visible = true;
         this.lightsGroup.clear(true, true);
         this.calculateReactionTime(2000);
-        this.reactionTimeText.setText(`Tiempo de Reacción: 2000 ms`);
-        this.reactionTimeText.setPosition(400, 200);
+        this.reactionTimeText.setText(`Espera a que desaparezcan las luces`);
+        this.errorText.setText(`Ha pulsado antes de tiempo`);
         this.input.off('pointerdown', this.handleEarlyClick, this);
         this.input.off('pointerdown', this.handleReactionClick, this);
         // Detiene el evento hideEvent si está programado para ejecutarse
@@ -118,16 +108,15 @@ export class Game extends Phaser.Scene {
             fill: '#fff',
         }).setOrigin(0.5).setInteractive();
 
-        /*if(this.currentAttempt === this.attempts) {
-            this.nextAttemptText.setText('Finalizar');
+        if(this.currentAttempt === this.attempts) {
+            this.nextButton.setText('Finalizar');
         } else {
-            this.nextAttemptText.setText('Siguiente intento');
-        }*/
+            this.nextButton.setText('Realizar siguiente intento');
+        }
 
         // Cuando el jugador hace clic en el botón, oculta el mensaje de error y comienza el próximo intento
         this.nextButton.on('pointerdown', () => {
             this.nextButton.destroy();
-            this.inputGuard.visible = false;  // Desbloquea el input
             this.continueGame();
         }, this);
     }
@@ -135,6 +124,7 @@ export class Game extends Phaser.Scene {
     handleReactionClick() {
         const reactionTime = this.calculateReactionTime();
         this.reactionTimeText.setText(`Tiempo de Reacción: ${reactionTime} ms`);
+        this.errorText.setText(`!Enhorabuena!`);
 
         this.input.off('pointerdown', this.handleReactionClick, this);
 
@@ -151,14 +141,14 @@ export class Game extends Phaser.Scene {
         if (time) {
             return time;
         } else {
-            return this.time.now - this.startTime;
+            return (this.time.now - this.startTime).toFixed(2);
         }
     }
 
     continueGame() {
         this.reactionTimeText.setText('');
-        this.nextAttemptText.setVisible(false);
-        this.inputGuard.visible = false;  // Desbloquea el input
+        this.errorText.setText('');
+        //this.inputGuard.visible = false;  // Desbloquea el input
         this.startNewAttempt();
     }
 
@@ -182,7 +172,7 @@ export class Game extends Phaser.Scene {
         this.attemptText.setVisible(false);
 
         // Muestra el mejor tiempo al final del juego
-        if (this.bestTime !== Number.MAX_SAFE_INTEGER) {
+        if (this.bestTime !== 2000) {
             this.add.text(400, 300, `Su mejor tiempo es de: ${this.bestTime} ms`, {
                 fontSize: '32px',
                 fill: '#fff',
