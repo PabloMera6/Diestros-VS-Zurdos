@@ -4,8 +4,8 @@ export class Game extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('globo-b', 'images/globo-bueno2.png');
-    this.load.image('globo-m', 'images/globo-malo2.png');
+    this.load.image('globo-b', 'assets/images/globo-bueno.png');
+    this.load.image('globo-m', 'assets/images/globo-malo.png');
   }
 
   create() {

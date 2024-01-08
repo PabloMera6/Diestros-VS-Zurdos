@@ -1,53 +1,54 @@
 const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
-const cors = require('cors');
+const mongoose = require('mongoose');
+
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use(express.json());
+// Configuración de bodyParser para parsear el cuerpo de las solicitudes
+app.use(bodyParser.json());
 
-const uri = 'mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/';
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// Conéctate a tu cluster de MongoDB Atlas (reemplaza <USERNAME>, <PASSWORD>, y <CLUSTER_URI>)
+mongoose.connect('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net//juego?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
-client.connect(err => {
-  if (err) {
-    console.error('Error al conectar a MongoDB:', err);
-  } else {
-    console.log('Conectado a MongoDB');
+// Define un esquema para los datos del usuario dentro de la colección 'usuario'
+const usuarioSchema = new mongoose.Schema({
+  edad: Number,
+  manoHabil: String,
+  manoMovil: String,
+  horasUsoMovil: String,
+});
+
+// Crea un modelo basado en el esquema
+const Usuario = mongoose.model('Usuario', usuarioSchema);
+
+// Manejar la solicitud POST en la ruta '/guardarDatos'
+app.post('/guardarDatos', async (req, res) => {
+  try {
+    // Obtener los datos del cuerpo de la solicitud
+    const data = req.body;
+
+    // Crear una instancia del modelo Usuario con los datos recibidos
+    const usuarioInstancia = new Usuario(data);
+
+    // Guardar el usuario en MongoDB Atlas
+    await usuarioInstancia.save();
+
+    console.log('Datos guardados:', data);
+
+    // Responder con éxito (puedes ajustar el código de estado según tus necesidades)
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error al guardar datos:', error);
+    // Responder con un error (puedes ajustar el código de estado según tus necesidades)
+    res.status(500).send('Error al procesar la solicitud');
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: 'public' });
-});
-
-app.get('/form.html', (req, res) => {
-  res.sendFile('form.html', { root: 'public' });
-});
-
-app.post('/guardarDatos', (req, res) => {
-  const datosFormulario = {
-    edad: req.body.edad,
-    manoHabil: req.body.manoHabil,
-    manoMovil: req.body.manoMovil,
-    horasUsoMovil: req.body.horasUsoMovil
-  };
-
-  const collection = client.db('Juego').collection('Usuario');
-  collection.insertOne(datosFormulario, (err, result) => {
-    if (err) {
-      console.error('Error al insertar en MongoDB:', err);
-      res.status(500).send('Error interno del servidor');
-    } else {
-      console.log('Datos del formulario insertados en MongoDB:', result.ops[0]);
-      res.sendFile('index.html', { root: 'public' });
-    }
-  });
-});
-
+// Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
