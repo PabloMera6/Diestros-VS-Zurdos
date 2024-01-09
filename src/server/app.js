@@ -9,7 +9,7 @@ const port = 3000;
 app.use(bodyParser.json());
 
 // Conéctate a tu cluster de MongoDB Atlas (reemplaza <USERNAME>, <PASSWORD>, y <CLUSTER_URI>)
-mongoose.connect('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net//juego?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -51,4 +51,9 @@ app.post('/guardarDatos', async (req, res) => {
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
+});
+
+app.get('/prueba',async (req, res) => {
+  res.send('prueba');
+  res.status(200).send('prueba');
 });

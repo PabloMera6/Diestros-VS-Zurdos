@@ -1,15 +1,18 @@
 const { MongoClient } = require("mongodb");
-const Express = require("express");
+const express = require("express");
 const BodyParser = require("body-parser");
 const Cors = require("cors");
+const path = require('path');
 
-const server = Express();
+
+
+const server = express();
 
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
 
-const client = new MongoClient("mongodb+srv://pabmergom:2002@@cluster0.odgnvyk.mongodb.net/gamedev?retryWrites=true&w=majority", {
+const client = new MongoClient('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -38,9 +41,19 @@ server.post("/guardarDatos", async (request, response, next) => {
 server.listen("3000", async () => {
   try {
     await client.connect();
-    collection = client.db("gamedev").collection("profiles");
+    collection = client.db("Juego").collection("Usuario");
     console.log("Listening at :3000...");
   } catch (e) {
     console.error(e);
   }
+});
+
+server.get('/',async (req, res) => {
+  const indexPath = path.join(__dirname, 'public/index.html');
+  res.sendFile(indexPath);
+});
+
+server.get('/juego',async (req, res) => {
+  const indexPath = path.join(__dirname, 'src/games/form/form.html');
+  res.sendFile(indexPath);
 });
