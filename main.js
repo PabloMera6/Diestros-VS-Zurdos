@@ -7,6 +7,7 @@ const path = require('path');
 
 
 const server = express();
+server.use(express.static('public'));
 
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
@@ -53,7 +54,7 @@ server.get('/',async (req, res) => {
   res.sendFile(indexPath);
 });
 
-server.get('/juego',async (req, res) => {
+server.get('/form',async (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/form/form.html');
   res.sendFile(indexPath);
 });

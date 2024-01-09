@@ -2,22 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario y Juegos</title>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+  <title>Formulario inicio</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/form.css">
 </head>
 <body>
   <form id="formulario" action="/guardarDatos" method="post">
     <label for="edad">Edad:</label>
     <input type="number" id="edad" name="edad" required>
 
-    <label for="manoFavorita">Mano Hábil:</label>
-    <select id="manoFavorita" name="manoFavorita" required>
+    <label for="manoHabil">Mano Hábil:</label>
+    <select id="manoHabil" name="manoHabil" required>
       <option value="derecha">Derecha</option>
       <option value="izquierda">Izquierda</option>
     </select>
 
-    <label for="manoFavorita">Mano con la que usas el móvil:</label>
-    <select id="manoFavorita" name="manoFavorita" required>
+    <label for="manoUso">Mano con la que usas el móvil:</label>
+    <select id="manoUso" name="manoUso" required>
       <option value="derecha">Derecha</option>
       <option value="izquierda">Izquierda</option>
     </select>
@@ -34,6 +34,6 @@
     <button type="submit">Comenzar a jugar</button>
   </form>
 
-  <script src="src/games/form/form.js"></script>
+  <script src="/src/games/form/form.js"></script>
 </body>
 </html>

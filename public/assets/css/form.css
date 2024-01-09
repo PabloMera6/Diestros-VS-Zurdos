@@ -1,0 +1,31 @@
+/* Estilo general para todos los campos del formulario */
+input, select, textarea {
+    border: 2px solid #333;
+    background-color: white;
+    border-radius: 0.25rem;
+   }
+   
+   /* Estilo específico para los campos de entrada de texto */
+   input[type="text"], input[type="number"] {
+    font: 1.25rem / 1.5 sans-serif;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+   }
+   
+   /* Estilo para el botón de envío */
+   button[type="submit"] {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+   }
+   

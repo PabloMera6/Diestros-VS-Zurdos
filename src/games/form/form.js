@@ -1,10 +1,10 @@
 document.getElementById('user-data-form').addEventListener('submit', function(event) {
     event.preventDefault();
   
-    var age = document.getElementById('age').value;
-    var favHand = document.getElementById('fav-hand').value;
-    var phoneHand = document.getElementById('phone-hand').value;
-    var phoneUsageHours = document.getElementById('phone-usage-hours').value;
+    var age = document.getElementById('edad').value;
+    var favHand = document.getElementById('manoHabil').value;
+    var phoneHand = document.getElementById('manoUso').value;
+    var phoneUsageHours = document.getElementById('horasUsoMovil').value;
   
     var data = {
       edad: age,
