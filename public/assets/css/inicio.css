@@ -1,0 +1,40 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    margin: 50px;
+   }
+   
+   h1 {
+    color: #333;
+   }
+   
+   p {
+    color: #555;
+   }
+   
+   button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+   }
+   
+   button:hover {
+    background-color: #45a049;
+   }
+   
+   @media screen and (max-width: 600px) {
+    body {
+      font-size: 18px;
+    }
+   }
+   
+   img {
+    max-width: 100%;
+    height: auto;
+   }
+   

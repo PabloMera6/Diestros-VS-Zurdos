@@ -1,10 +1,12 @@
 import { Game } from './game.js';
 import { CountDown } from './countDown.js';
 
+
+
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 500,
+  width: 430,
+  height: 932,
   scene: [CountDown, Game],
   physics: {
     default: 'arcade',
@@ -14,5 +16,6 @@ const config = {
     }
   }
 }
+
 
 var game = new Phaser.Game(config);

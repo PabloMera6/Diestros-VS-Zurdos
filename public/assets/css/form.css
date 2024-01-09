@@ -1,31 +1,65 @@
-/* Estilo general para todos los campos del formulario */
-input, select, textarea {
-    border: 2px solid #333;
-    background-color: white;
-    border-radius: 0.25rem;
-   }
-   
-   /* Estilo específico para los campos de entrada de texto */
-   input[type="text"], input[type="number"] {
-    font: 1.25rem / 1.5 sans-serif;
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-   }
-   
-   /* Estilo para el botón de envío */
-   button[type="submit"] {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
+    margin: 0;
+    padding: 0;
+}
+
+header, footer {
+    background-color: #ff6600;
+    padding: 10px;
+    color: #ffffff;
+}
+
+#content {
+    margin: 20px;
+}
+
+form {
+    max-width: 80%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select {
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 4px;
-   }
-   
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        font-size: 16px;
+    }
+
+    form {
+        max-width: 100%;
+    }
+}
