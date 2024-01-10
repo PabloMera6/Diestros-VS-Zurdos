@@ -8,12 +8,13 @@
 </head>
 <body>
   <header style="background-color: #ff6600; padding: 10px; text-align: center;">
-      <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
+    <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
   </header>
 
   <div id="content">
-    <form id="formulario" action="/guardarDatos" method="post">
-      
+    <form id="user-data-form" action="/form" method="post">
+      <div id="error-message" style="color: red;"></div>
+
       <label for="nombre">Nombre:</label>
       <input type="text" id="nombre" name="nombre" required>
       

@@ -1,11 +1,14 @@
 const { MongoClient } = require("mongodb");
 const express = require("express");
+const session = require('express-session');
 const BodyParser = require("body-parser");
 const Cors = require("cors");
 const path = require('path');
 
+
 const server = express();
 server.use(express.static('public'));
+server.use('/src/games/form', express.static(path.join(__dirname + '/src/games/form')));
 server.use('/src/games/game1', express.static(path.join(__dirname, 'src/games/game1')));
 server.use('/src/games/game2', express.static(path.join(__dirname, 'src/games/game2')));
 server.use('/src/games/game3', express.static(path.join(__dirname, 'src/games/game3')));
@@ -13,6 +16,12 @@ server.use('/src/games/game3', express.static(path.join(__dirname, 'src/games/ga
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
+
+server.use(session({
+  secret: 'ContraseñaSegura098',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 const client = new MongoClient('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/', {
   useNewUrlParser: true,
@@ -39,28 +48,6 @@ async function setupDatabase() {
 // Llamar a la función de configuración de la base de datos al iniciar el servidor
 setupDatabase();
 
-server.post("/guardarDatos", async (request, response, next) => {
-  try {
-    const data = request.body;
-
-    // Verificar si el usuario ya existe
-    const existingUser = await collection.findOne({ nombre: data.nombre });
-
-    if (existingUser) {
-      return response.status(400).json({ error: "El usuario ya existe" });
-    }
-
-    // Insertar los datos en la colección de perfiles
-    const result = await collection.insertOne(data);
-
-    // Redirigir al usuario a la página game1 después de guardar los datos
-    response.redirect('/game1');
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: "Error interno del servidor" });
-  }
-});
-
 server.listen("3000", () => {
   console.log("Listening at :3000...");
 });
@@ -74,6 +61,43 @@ server.get('/form', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/form/form.html');
   res.sendFile(indexPath);
 });
+
+server.post("/form", async (request, response, next) => {
+  try {
+    const data = request.body;
+
+    // Validar longitud del nombre y rango de edad
+    if (data.nombre.length < 5 || data.nombre.length > 15) {
+      return response.status(400).json({ error: 'El nombre debe tener entre 5 y 15 caracteres.' });
+    }
+
+    if (isNaN(data.edad) || data.edad < 3 || data.edad > 99) {
+      return response.status(400).json({ error: 'La edad debe estar entre 3 y 99 años.' });
+    }
+
+    // Verificar si el usuario ya existe
+    const existingUser = await collection.findOne({ nombre: data.nombre });
+
+    if (existingUser) {
+      return response.status(400).json({ error: 'El usuario ya existe' });
+    }
+
+    // Insertar los datos en la colección de perfiles y guardar el id del usuario en la sesión
+    const result = await collection.insertOne(data);
+    const userId = result.insertedId.toString();
+    request.session.userId = userId;
+
+    // Mensaje de éxito
+    const successMessage = "Usuario registrado correctamente";
+    response.status(200).json({ message: successMessage });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+
+
 
 server.get('/game1', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game1/index1.html');

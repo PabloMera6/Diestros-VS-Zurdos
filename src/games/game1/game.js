@@ -6,7 +6,7 @@ export class Game extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('background', 'assets/images/fondo.jpg');
+    this.load.image('background', 'assets/images/fondo-globo.jpeg');
     this.load.image('globo-b', 'assets/images/globo-bueno2.png');
     this.load.image('globo-m', 'assets/images/globo-malo2.png');
   }
@@ -49,23 +49,37 @@ export class Game extends Phaser.Scene {
       delay: Phaser.Math.Between(3000, 10000),
       callback: () => {
         if (this.globoCount < 3) {
-          const x = Phaser.Math.Between(50, this.width - 50);
-          const y = Phaser.Math.Between(100, this.height - 50);
-          const globo = this.add.sprite(x, y, 'globo-m');
-          globo.setInteractive();
-          globo.on('pointerdown', () => {
-            this.score -= 20;
-            this.scoreText.setText(`Score: ${this.score}`);
-            globo.destroy();
-          });
-          this.globoCount++;
-          this.time.delayedCall(1000, () => {
-            globo.destroy();
-          });
+          // Intenta crear el globo-m sin colisionar con el globo-b
+          const globo = this.createGloboWithoutCollision();
+          if (globo) {
+            this.globoCount++;
+            this.time.delayedCall(1000, () => {
+              globo.destroy();
+            });
+          }
         }
       },
       loop: true
     });
+  }
+
+  createGloboWithoutCollision() {
+    const x = Phaser.Math.Between(50, this.width - 50);
+    const y = Phaser.Math.Between(100, this.height - 50);
+
+    // Verifica si la posición colisiona con el globo-b
+    if (!Phaser.Geom.Intersects.RectangleToRectangle(this.circle.getBounds(), new Phaser.Geom.Rectangle(x, y, 100, 100))) {
+      const globo = this.add.sprite(x, y, 'globo-m');
+      globo.setInteractive();
+      globo.on('pointerdown', () => {
+        this.score -= 20;
+        this.scoreText.setText(`Puntuación: ${this.score}`);
+        globo.destroy();
+      });
+      return globo;
+    }
+
+    return null; // Retorna null si hay colisión
   }
 
   moveCircle() {
