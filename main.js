@@ -97,7 +97,10 @@ server.post("/form", async (request, response, next) => {
 });
 
 
-
+server.get('/menu', (req, res) => {
+  const indexPath = path.join(__dirname, 'src/games/menu/menu.html');
+  res.sendFile(indexPath);
+});
 
 server.get('/game1', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game1/index1.html');
