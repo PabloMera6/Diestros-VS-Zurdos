@@ -1,9 +1,21 @@
 import ScreenController from './screenController.js';
 
+let gameAttempts = 0;
+
 export class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'game' });
     this.scoreSent = false;
+    this.scoreKey = 'scoregame1'; // Por defecto
+    this.resetedTime = false;
+  }
+
+  init(data) {
+    console.log('Entro init');
+    if (data && data.secondAttempt) {
+      console.log('Entro secondAttempt');
+      this.scoreKey = 'scoregame2';   
+    }
   }
 
   preload() {
@@ -13,17 +25,22 @@ export class Game extends Phaser.Scene {
   }
 
   create() {
+    this.scoreSent = false;
+    console.log('scoreKey', this.scoreKey);
+    console.log('gameAttempts', gameAttempts);
+
     this.screenController = new ScreenController(this);
     this.width = this.screenController.getWidth();
     this.height = this.screenController.getHeight();
     this.score = 0;
+
     this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height);
     this.scoreText = this.add.text(10, 10, `Puntuación: ${this.score}`, {
       fontSize: '32px',
       fill: '#fff',
       id: 'score'
     });
-    
+
     this.timeText = this.add.text(this.width - 50, 10, '', {
       fontSize: '32px',
       fill: '#fff',
@@ -36,11 +53,9 @@ export class Game extends Phaser.Scene {
     this.circle.on('pointerdown', () => {
       this.score += 10;
       this.scoreText.setText(`Puntuación: ${this.score}`);
-      // Cancela el evento de tiempo existente y crea uno nuevo después de 2 segundos.
       this.moveCircle();
     });
 
-    // Crea el primer evento de tiempo.
     this.moveCircle();
     this.startTime = this.time.now;
     this.endTime = this.startTime + 20000;
@@ -50,7 +65,6 @@ export class Game extends Phaser.Scene {
       delay: Phaser.Math.Between(3000, 10000),
       callback: () => {
         if (this.globoCount < 3) {
-          // Intenta crear el globo-m sin colisionar con el globo-b
           const globo = this.createGloboWithoutCollision();
           if (globo) {
             this.globoCount++;
@@ -68,7 +82,6 @@ export class Game extends Phaser.Scene {
     const x = Phaser.Math.Between(50, this.width - 50);
     const y = Phaser.Math.Between(100, this.height - 50);
 
-    // Verifica si la posición colisiona con el globo-b
     if (!Phaser.Geom.Intersects.RectangleToRectangle(this.circle.getBounds(), new Phaser.Geom.Rectangle(x, y, 100, 100))) {
       const globo = this.add.sprite(x, y, 'globo-m');
       globo.setInteractive();
@@ -80,7 +93,7 @@ export class Game extends Phaser.Scene {
       return globo;
     }
 
-    return null; // Retorna null si hay colisión
+    return null;
   }
 
   moveCircle() {
@@ -88,22 +101,26 @@ export class Game extends Phaser.Scene {
     const y = Phaser.Math.Between(50, this.height - 50);
     this.circle.setPosition(x, y);
 
-    // Cancela cualquier evento de tiempo existente.
     if (this.moveCircleTimer) {
-      this.moveCircleTimer.remove(false); // No lo elimina del bucle de eventos
+      this.moveCircleTimer.remove(false);
     }
 
-    // Crea un nuevo evento de tiempo que se repita cada 2 segundos.
     this.moveCircleTimer = this.time.addEvent({
       delay: 1000,
       callback: this.moveCircle,
       callbackScope: this,
-      repeat: -1, // Se repite indefinidamente
+      repeat: -1,
     });
   }
 
   update() {
-    const elapsedTime = this.time.now - this.startTime;
+    if(this.scoreKey == 'scoregame2' && this.resetedTime == false) {
+      this.startTime = this.time.now;
+      this.endTime = this.startTime + 20000
+      this.resetedTime = true;
+    }
+    let elapsedTime;
+    elapsedTime = this.time.now - this.startTime;
     if (elapsedTime >= 20000) {
       this.scoreText.setText(`Final Score: ${this.score}`);
       this.circle.disableInteractive();
@@ -111,27 +128,39 @@ export class Game extends Phaser.Scene {
       this.timeText.setText('');
       this.moveCircleTimer.remove(false);
       this.globoTimer.remove(false);
-      if(!this.scoreSent) {
+
+      if (!this.scoreSent) {
         const finalScore = this.score;
-        const apiUrl = '/gamesave';
+        let apiUrl = '/gamesave1-a';
+        if (gameAttempts == 1) {
+          apiUrl = '/gamesave1-b';
+        }
+        const requestBody = {};
+        requestBody[this.scoreKey] = finalScore;
+
         fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            scoregame1: finalScore,
-          }),
+          body: JSON.stringify(requestBody),
         })
           .then(response => response.json())
           .then(data => {
-            console.log(data.message); // Mensaje del servidor
+            console.log(data.message);
           })
           .catch(error => {
             console.error('Error al enviar la puntuación:', error);
           });
 
-        this.scoreSent = true; // Establecer la bandera a true para evitar el envío repetido
+        this.scoreSent = true;
+        gameAttempts++;
+
+        if (gameAttempts < 2) {
+          this.scene.start('intermediate');
+        } else {
+            this.scene.start('final');
+        }
       }
     } else {
       const remainingTime = Math.ceil((this.endTime - this.time.now) / 1000);

@@ -5,6 +5,15 @@ export class CountDown extends Phaser.Scene {
         super({ key: 'countdown' });
     }
 
+    secondAttempt = false;
+
+    init(data) {
+        // Verifica si la propiedad secondAttempt está presente en los datos
+        if (data && data.secondAttempt) {
+          this.secondAttempt = true;
+        }
+    }
+
     preload() {
         this.load.image('background', 'assets/images/fondo-paisaje.jpg');
     }
@@ -37,7 +46,7 @@ export class CountDown extends Phaser.Scene {
 
     update() {
         if (this.countdown === 0) {
-            this.scene.start('game');
+            this.scene.start('game', { secondAttempt: this.secondAttempt });
         }
     }
 }
