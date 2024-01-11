@@ -1,4 +1,5 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
+
 const express = require("express");
 const session = require('express-session');
 const BodyParser = require("body-parser");
@@ -105,9 +106,59 @@ server.get('/menu', (req, res) => {
 });
 
 server.get('/game1', (req, res) => {
+  const userId = req.session.userId;
+  
+  if(!userId) {
+    console.log("No hay usuario registrado.");
+  } else {
+    console.log("Usuario registrado. userId:", userId);
+  }
+
   const indexPath = path.join(__dirname, 'src/games/game1/index1.html');
   res.sendFile(indexPath);
 });
+
+
+// Endpoint para recibir la puntuación del juego después de que el jugador complete el juego
+server.post("/gamesave", async (request, response, next) => {
+  try {
+    const userId = new ObjectId(request.session.userId); // Obtiene el ID del usuario desde la sesión
+    const { scoregame1 } = request.body;
+
+    if (!userId || isNaN(scoregame1)) {
+      return response.status(400).json({ error: 'Parámetros incorrectos.' });
+    }
+
+    // Actualizar el documento del usuario con la puntuación del juego 1
+    await collection.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          scoregame1: parseInt(scoregame1, 10)
+        },
+      },
+      { upsert: true }
+    );
+    
+
+    const result = await collection.findOne({ _id: userId });
+
+    console.log(result); // Imprime en la consola el resultado de la consulta
+
+    // Puedes acceder al campo scoregame1 de la siguiente manera
+    if (result) {
+      console.log("Score en game1:", result.scoregame1);
+    } else {
+      console.log("Usuario no encontrado o sin score en game1.");
+    }
+
+    response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
 
 server.get('/game2', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game2/index2.html');

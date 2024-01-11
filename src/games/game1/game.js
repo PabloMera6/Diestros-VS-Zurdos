@@ -3,10 +3,11 @@ import ScreenController from './screenController.js';
 export class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'game' });
+    this.scoreSent = false;
   }
 
   preload() {
-    this.load.image('background', 'assets/images/fondo-globo.jpeg');
+    this.load.image('background', 'assets/images/fondo-globo.jpg');
     this.load.image('globo-b', 'assets/images/globo-bueno2.png');
     this.load.image('globo-m', 'assets/images/globo-malo2.png');
   }
@@ -110,6 +111,28 @@ export class Game extends Phaser.Scene {
       this.timeText.setText('');
       this.moveCircleTimer.remove(false);
       this.globoTimer.remove(false);
+      if(!this.scoreSent) {
+        const finalScore = this.score;
+        const apiUrl = '/gamesave';
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            scoregame1: finalScore,
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data.message); // Mensaje del servidor
+          })
+          .catch(error => {
+            console.error('Error al enviar la puntuación:', error);
+          });
+
+        this.scoreSent = true; // Establecer la bandera a true para evitar el envío repetido
+      }
     } else {
       const remainingTime = Math.ceil((this.endTime - this.time.now) / 1000);
       this.timeText.setText(`${remainingTime}`);
