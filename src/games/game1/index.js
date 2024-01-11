@@ -1,12 +1,13 @@
 import { Game } from './game.js';
 import { CountDown } from './countDown.js';
 
-
+const windowWidth = window.innerWidth;
+const windowHeight = window.innerHeight;
 
 const config = {
   type: Phaser.AUTO,
-  width: 430,
-  height: 932,
+  width: windowWidth,
+  height: windowHeight,
   scene: [CountDown, Game],
   physics: {
     default: 'arcade',

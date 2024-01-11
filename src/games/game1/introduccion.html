@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instrucciones del Juego</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/introduccion.css">
+</head>
+
+<body>
+
+  <header style="background-color: #ff6600; padding: 1em; text-align: center;">
+    <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
+  </header>
+
+  <div id="content">
+    <div class="instructions">
+      <div class="text-container">
+        <p>
+          Como juego de velocidad nos encontramos con el <strong>Explota Globos</strong> 
+        </p>
+        <p>
+          En este juego se presentan globos de color rojo, los cuales se deben explotar pulsando sobre ellos
+        </p>
+        <p>
+          Si pulsas sobre un globo, se te suman <strong>10 puntos</strong> al contador, pero ¡<strong>Cuidado!</strong>
+        </p>
+        <p>
+          Si pulsas sobre un globo con una <strong>cruz</strong> en el centro, se te restan <strong>20 puntos</strong>
+        </p>
+        <p>
+          Tendrás 20 segundos para explotar la mayor cantidad de globos posibles
+        </p>
+        <p>
+          El tiempo restante se sitúa en la esquina superior derecha de la pantalla
+        </p>
+        <p>
+          En la siguiente imagen puedes ver lo que te encontrarás
+        </p>
+        <p>
+          Empieza usando la mano derecha
+        </p>
+        <p>
+          ¡Buena suerte!
+        </p>
+      </div>
+  
+      <img src="/assets/images/Game1.png" alt="Imagen Juego 1" class="game-image">
+
+        <div class="notice">
+            <p>
+                En cuanto pulses el botón, habrá una cuenta atrás y comenzará el juego.
+            </p>
+        </div>
+  
+      <button onclick="startGame()" class="orange-button">
+        Comenzar a Jugar
+      </button>
+    </div>
+  </div>
+
+  <footer style="background-color: #ff6600; padding: 1em; text-align: center;">
+    <p>&copy; Zurdos vs Diestros</p>
+  </footer>
+
+  <script>
+    function startGame() {
+      window.location.href = "/game1";
+    }
+  </script>
+
+</body>
+
+</html>

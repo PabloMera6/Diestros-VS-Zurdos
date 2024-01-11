@@ -105,15 +105,12 @@ server.get('/menu', (req, res) => {
   res.sendFile(indexPath);
 });
 
-server.get('/game1', (req, res) => {
-  const userId = req.session.userId;
-  
-  if(!userId) {
-    console.log("No hay usuario registrado.");
-  } else {
-    console.log("Usuario registrado. userId:", userId);
-  }
+server.get('/introduccion-1', (req, res) => {
+  const indexPath = path.join(__dirname, 'src/games/game1/introduccion.html');
+  res.sendFile(indexPath);
+});
 
+server.get('/game1', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game1/index1.html');
   res.sendFile(indexPath);
 });

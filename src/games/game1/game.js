@@ -7,7 +7,7 @@ export class Game extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('background', 'assets/images/fondo-globo.jpg');
+    this.load.image('background', 'assets/images/fondo-paisaje.jpg');
     this.load.image('globo-b', 'assets/images/globo-bueno2.png');
     this.load.image('globo-m', 'assets/images/globo-malo2.png');
   }
@@ -17,7 +17,7 @@ export class Game extends Phaser.Scene {
     this.width = this.screenController.getWidth();
     this.height = this.screenController.getHeight();
     this.score = 0;
-    this.add.image(0, 0, 'background').setOrigin(0, 0).setDisplaySize(this.width, this.height);
+    this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height);
     this.scoreText = this.add.text(10, 10, `Puntuación: ${this.score}`, {
       fontSize: '32px',
       fill: '#fff',
