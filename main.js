@@ -36,10 +36,6 @@ async function setupDatabase() {
     await client.connect();
     collection = client.db("Juego").collection("Usuario");
 
-    // Crear una indexación única en el campo "nombre"
-    await collection.createIndex({ nombre: 1 }, { unique: true });
-
-    console.log("Índice único creado en el campo 'nombre'");
   } catch (e) {
     console.error("Error al conectar y configurar la base de datos", e);
   }
@@ -62,36 +58,42 @@ server.get('/form', (req, res) => {
   res.sendFile(indexPath);
 });
 
+
+// Middleware para validar el formulario
+const validateFormMiddleware = (data) => {
+  if (data.nombre.length < 5 || data.nombre.length > 15) {
+    throw new Error('El nombre debe tener entre 5 y 15 caracteres.');
+  }
+
+  if (isNaN(data.edad) || data.edad < 3 || data.edad > 99) {
+    throw new Error('La edad debe estar entre 3 y 99 años.');
+  }
+};
+
+
+// Middleware para manejar el formulario y redireccionar
 server.post("/form", async (request, response, next) => {
   try {
     const data = request.body;
 
-    // Validar longitud del nombre y rango de edad
-    if (data.nombre.length < 5 || data.nombre.length > 15) {
-      return response.status(400).json({ error: 'El nombre debe tener entre 5 y 15 caracteres.' });
-    }
+    // Validar formulario
+    validateFormMiddleware(data);
 
-    if (isNaN(data.edad) || data.edad < 3 || data.edad > 99) {
-      return response.status(400).json({ error: 'La edad debe estar entre 3 y 99 años.' });
-    }
-
-    // Verificar si el usuario ya existe
-    const existingUser = await collection.findOne({ nombre: data.nombre });
-
-    if (existingUser) {
-      return response.status(400).json({ error: 'El usuario ya existe' });
-    }
-
-    // Insertar los datos en la colección de perfiles y guardar el id del usuario en la sesión
+    // Insertar datos en la colección y guardar el id en la sesión
     const result = await collection.insertOne(data);
     const userId = result.insertedId.toString();
     request.session.userId = userId;
 
-    // Mensaje de éxito
-    const successMessage = "Usuario registrado correctamente";
-    response.status(200).json({ message: successMessage });
+    // Redirigir al usuario a la URL /menu después del registro exitoso
+    response.status(200).json({ redirect: '/menu' });
   } catch (error) {
     console.error(error);
+
+    // Manejar errores específicos y enviar respuestas adecuadas
+    if (error instanceof Error) {
+      return response.status(400).json({ error: error.message });
+    }
+
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });

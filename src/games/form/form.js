@@ -3,6 +3,9 @@ document.getElementById('user-data-form').addEventListener('submit', function (e
 
   const nombreInput = document.getElementById('nombre');
   const edadInput = document.getElementById('edad');
+  const manoHabilInput = document.getElementById('manoHabil');
+  const manoUsoInput = document.getElementById('manoUso');
+  const horasUsoMovilInput = document.getElementById('horasUsoMovil');
   const errorMessageElement = document.getElementById('error-message');
 
   // Validar longitud del nombre
@@ -23,8 +26,29 @@ document.getElementById('user-data-form').addEventListener('submit', function (e
   errorMessageElement.textContent = '';
 
   // Continuar con el envío del formulario si no hay errores
-  this.submit();
-});
+  fetch('/form', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      nombre: nombreValue,
+      edad: edadValue,
+      manoHabil: manoHabilInput.value,
+      manoUso: manoUsoInput.value,
+      horasUsoMovil: horasUsoMovilInput.value,
+    }),
+   })
+    .then(response => response.json())
+    .then(data => {
+      if (data.redirect) {
+        window.location.replace(data.redirect);
+      } else {
+        console.log(data.message);
+      }
+    })
+    .catch(error => console.error(error));
+});   
 
 function showError(message) {
   const errorMessageElement = document.getElementById('error-message');
