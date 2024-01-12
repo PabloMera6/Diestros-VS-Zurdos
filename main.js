@@ -13,10 +13,12 @@ server.use('/src/games/form', express.static(path.join(__dirname + '/src/games/f
 server.use('/src/games/game1', express.static(path.join(__dirname, 'src/games/game1')));
 server.use('/src/games/game2', express.static(path.join(__dirname, 'src/games/game2')));
 server.use('/src/games/game3', express.static(path.join(__dirname, 'src/games/game3')));
+server.set('views', path.join(__dirname, 'views'));
 
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
+server.set('view engine', 'ejs');
 
 server.use(session({
   secret: 'ContraseñaSegura098',
@@ -140,15 +142,6 @@ server.post("/gamesave1-a", async (request, response, next) => {
 
     const result = await collection.findOne({ _id: userId });
 
-    console.log(result); // Imprime en la consola el resultado de la consulta
-
-    // Puedes acceder al campo scoregame1 de la siguiente manera
-    if (result) {
-      console.log("Score en game1-a:", result.scoregame1);
-    } else {
-      console.log("Usuario no encontrado o sin score en game1-a.");
-    }
-
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
     console.error(error);
@@ -179,19 +172,44 @@ server.post("/gamesave1-b", async (request, response, next) => {
 
     const result = await collection.findOne({ _id: userId });
 
-    console.log(result); // Imprime en la consola el resultado de la consulta
-
-    // Puedes acceder al campo scoregame1 de la siguiente manera
-    if (result) {
-      console.log("Score en game1-b:", result.scoregame2);
-    } else {
-      console.log("Usuario no encontrado o sin score en game1-b.");
-    }
 
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
     console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+server.get('/resultados1', async (req, res) => {
+  try {
+    const userId = new ObjectId(req.session.userId);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'ID de usuario no válido.' });
+    }
+
+    const userData = await collection.findOne({ _id: userId });
+
+    if (!userData) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    const averageData = await collection.aggregate([
+      {
+        $group: {
+          _id: null,
+          mediagame1: { $avg: '$scoregame1' },
+          mediagame2: { $avg: '$scoregame2' },
+        },
+      },
+    ]).toArray();
+    const porcentajeRespectoMediaDerecha = ((userData.scoregame1 - averageData[0].mediagame1) / averageData[0].mediagame1) * 100;
+    const porcentajeRespectoMediaIzquierda = ((userData.scoregame2 - averageData[0].mediagame2) / averageData[0].mediagame2) * 100;
+
+    res.render('resultados', { datosUsuario1: userData.scoregame1, datosUsuario2: userData.scoregame2, datosMedia1: porcentajeRespectoMediaDerecha, datosMedia2: porcentajeRespectoMediaIzquierda });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
 

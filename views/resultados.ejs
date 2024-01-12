@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/resultados.css">
+</head>
+
+<body>
+
+  <header>
+    <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
+  </header>
+
+  <div id="content">
+    <div class="notice">
+      <p>
+        Estos son sus resultados en el juego de valocidad
+      </p>
+    </div>
+   <h1 class="orange-box">Puntuación en el juego</h1>
+      <p><span class="highlight">Mano derecha: <%= datosUsuario1 %></span></p>
+      <p><span class="highlight">Mano izquierda: <%= datosUsuario2 %></span></p>
+
+   <h1 class="orange-box">Respecto al resto de jugadores</h1>
+      <% if (datosMedia1 > 0) { %>
+      <p><span class="highlight">¡Enhorabuena! Tu tiempo con la mano derecha es superior en <%= Math.round(datosMedia1) %>% a la media.</span></p>
+      <% } else if (datosMedia1 < 0) { %>
+      <p><span class="highlight">Tu tiempo con la mano derecha es inferior un <%= Math.round(Math.abs(datosMedia1)) %>% de la media. ¡Sigue practicando!</span></p>
+      <% } else { %>
+      <p><span class="highlight">Tu tiempo con la mano derecha es igual a la media.</span></p>
+      <% } %>
+      <% if (datosMedia2 > 0) { %>
+      <p><span class="highlight">¡Enhorabuena! Tu tiempo con la mano izquierda es superior en <%= Math.round(datosMedia2) %>% a la media.</span></p>
+      <% } else if (datosMedia2 < 0) { %>
+      <p><span class="highlight">Tu tiempo con la mano izquierda es inferior un <%= Math.round(Math.abs(datosMedia2)) %>% de la media. ¡Sigue practicando!</span></p>
+      <% } else { %>
+      <p><span class="highlight">Tu tiempo con la mano izquierda es igual a la media.</span></p>
+      <% } %>
+   
+   
+   <a href="/menu" class="orange-button">Volver al menú</a>
+
+ </div>
+
+ <footer style="background-color: #ff6600; padding: 1em; text-align: center;">
+   <p>&copy; Zurdos vs Diestros</p>
+ </footer>
+
+</body>
+
+</html>

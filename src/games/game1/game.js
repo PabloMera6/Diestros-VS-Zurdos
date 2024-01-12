@@ -157,9 +157,9 @@ export class Game extends Phaser.Scene {
         gameAttempts++;
 
         if (gameAttempts < 2) {
-          this.scene.start('intermediate');
+          this.scene.start('intermediate', { score1: finalScore });
         } else {
-            this.scene.start('final');
+          this.scene.start('final', { score2: finalScore });
         }
       }
     } else {

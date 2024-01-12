@@ -1,0 +1,81 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f0f0;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+ }
+ 
+ header, footer {
+  background-color: #ff6600;
+  padding: 1em;
+  color: #ffffff;
+ }
+ 
+ #content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 5%;
+ }
+ 
+ .orange-box {
+  background-color: orange;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-bottom: 2%;
+ }
+ 
+ .highlight {
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+ }
+ 
+ .text-container {
+  text-align: center;
+ }
+ 
+ .text-container p {
+  display: block;
+  margin: 0 auto;
+  max-width: 600px;
+ }
+ 
+ .notice {
+  text-align: center;
+  margin-top: 2%;
+ }
+ 
+ .notice p {
+  font-style: italic;
+ }
+ 
+ .orange-button {
+  position: relative;
+  overflow: hidden;
+  padding: 15px;
+  font-size: 18px;
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  margin-top: 2%;
+  margin-bottom: 2%;
+ }
+ 
+ .orange-button:hover {
+  background-color: #e55d00;
+ }
+ 
