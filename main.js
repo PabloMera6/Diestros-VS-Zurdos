@@ -118,30 +118,25 @@ server.get('/game1', (req, res) => {
 });
 
 
-// Endpoint para recibir la puntuación del juego después de que el jugador complete el juego
 server.post("/gamesave1-a", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId); // Obtiene el ID del usuario desde la sesión
-    const { scoregame1 } = request.body;
+    const userId = new ObjectId(request.session.userId);
+    const { scoregame1d } = request.body;
 
-    if (!userId || isNaN(scoregame1)) {
+    if (!userId || isNaN(scoregame1d)) {
       return response.status(400).json({ error: 'Parámetros incorrectos.' });
     }
 
-    // Actualizar el documento del usuario con la puntuación del juego 1
     await collection.updateOne(
       { _id: userId },
       {
         $set: {
-          scoregame1: parseInt(scoregame1, 10)
+          scoregame1d: parseInt(scoregame1d, 10)
         },
       },
       { upsert: true }
     );
     
-
-    const result = await collection.findOne({ _id: userId });
-
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
     console.error(error);
@@ -151,27 +146,22 @@ server.post("/gamesave1-a", async (request, response, next) => {
 
 server.post("/gamesave1-b", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId); // Obtiene el ID del usuario desde la sesión
-    const { scoregame2 } = request.body;
+    const userId = new ObjectId(request.session.userId);
+    const { scoregame1i } = request.body;
 
-    if (!userId || isNaN(scoregame2)) {
+    if (!userId || isNaN(scoregame1i)) {
       return response.status(400).json({ error: 'Parámetros incorrectos.' });
     }
 
-    // Actualizar el documento del usuario con la puntuación del juego 1
     await collection.updateOne(
       { _id: userId },
       {
         $set: {
-          scoregame2: parseInt(scoregame2, 10)
+          scoregame1i: parseInt(scoregame1i, 10)
         },
       },
       { upsert: true }
     );
-    
-
-    const result = await collection.findOne({ _id: userId });
-
 
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
@@ -198,26 +188,84 @@ server.get('/resultados1', async (req, res) => {
       {
         $group: {
           _id: null,
-          mediagame1: { $avg: '$scoregame1' },
-          mediagame2: { $avg: '$scoregame2' },
+          mediagame1d: { $avg: '$scoregame1d' },
+          mediagame1i: { $avg: '$scoregame1i' },
         },
       },
     ]).toArray();
-    const porcentajeRespectoMediaDerecha = ((userData.scoregame1 - averageData[0].mediagame1) / averageData[0].mediagame1) * 100;
-    const porcentajeRespectoMediaIzquierda = ((userData.scoregame2 - averageData[0].mediagame2) / averageData[0].mediagame2) * 100;
+    const porcentajeRespectoMediaDerecha = ((userData.scoregame1d - averageData[0].mediagame1d) / averageData[0].mediagame1d) * 100;
+    const porcentajeRespectoMediaIzquierda = ((userData.scoregame1i - averageData[0].mediagame1i) / averageData[0].mediagame1i) * 100;
 
-    res.render('resultados', { datosUsuario1: userData.scoregame1, datosUsuario2: userData.scoregame2, datosMedia1: porcentajeRespectoMediaDerecha, datosMedia2: porcentajeRespectoMediaIzquierda });
+    res.render('resultados', { datosUsuario1: userData.scoregame1d, datosUsuario2: userData.scoregame1i, datosMedia1: porcentajeRespectoMediaDerecha, datosMedia2: porcentajeRespectoMediaIzquierda });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
 
+server.get('/introduccion-2', (req, res) => {
+  const indexPath = path.join(__dirname, 'src/games/game2/introduccion.html');
+  res.sendFile(indexPath);
+});
 
 server.get('/game2', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game2/index2.html');
   res.sendFile(indexPath);
 });
+
+server.post("/gamesave2-a", async (request, response, next) => {
+  try {
+    const userId = new ObjectId(request.session.userId);
+    const { scoregame2d } = request.body;
+    console.log(scoregame2d);
+    console.log(userId);
+    if (!userId || isNaN(scoregame2d)) {
+      return response.status(400).json({ error: 'Parámetros incorrectos.' });
+    }
+
+    await collection.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          scoregame2d: parseInt(scoregame2d)
+        },
+      },
+      { upsert: true }
+    );
+    
+    response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+server.post("/gamesave2-b", async (request, response, next) => {
+  try {
+    const userId = new ObjectId(request.session.userId);
+    const { scoregame2i } = request.body;
+
+    if (!userId || isNaN(scoregame2i)) {
+      return response.status(400).json({ error: 'Parámetros incorrectos.' });
+    }
+
+    await collection.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          scoregame2i: parseInt(scoregame2i, 10)
+        },
+      },
+      { upsert: true }
+    );
+
+    response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
 
 server.get('/game3', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game3/index3.html');

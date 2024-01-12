@@ -6,15 +6,13 @@ export class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'game' });
     this.scoreSent = false;
-    this.scoreKey = 'scoregame1'; // Por defecto
+    this.scoreKey = 'scoregame1-d'; // Por defecto
     this.resetedTime = false;
   }
 
   init(data) {
-    console.log('Entro init');
     if (data && data.secondAttempt) {
-      console.log('Entro secondAttempt');
-      this.scoreKey = 'scoregame2';   
+      this.scoreKey = 'scoregame1-i';   
     }
   }
 
@@ -26,8 +24,6 @@ export class Game extends Phaser.Scene {
 
   create() {
     this.scoreSent = false;
-    console.log('scoreKey', this.scoreKey);
-    console.log('gameAttempts', gameAttempts);
 
     this.screenController = new ScreenController(this);
     this.width = this.screenController.getWidth();
@@ -114,7 +110,7 @@ export class Game extends Phaser.Scene {
   }
 
   update() {
-    if(this.scoreKey == 'scoregame2' && this.resetedTime == false) {
+    if(this.scoreKey == 'scoregame1-i' && this.resetedTime == false) {
       this.startTime = this.time.now;
       this.endTime = this.startTime + 20000
       this.resetedTime = true;

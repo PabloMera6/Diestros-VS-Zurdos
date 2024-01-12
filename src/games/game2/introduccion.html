@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instrucciones del Juego</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/introduccion.css">
+</head>
+
+<body>
+
+  <header style="background-color: #ff6600; padding: 1em; text-align: center;">
+    <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
+  </header>
+
+  <div id="content">
+    <div class="instructions">
+      <div class="text-container">
+        <p>
+          Como juego de velocidad nos encontramos con el <strong>Fernando Alonso</strong> 
+        </p>
+        <p>
+          En este juego se presenta la simulación del semáforo de salida de una carrera de Fórmula 1
+        </p>
+        <p>
+          Si encenderán una a una <strong>cuatro luces rojas</strong> cada segundo en horizontal
+        </p>
+        <p>
+          Cuando estas 4 luces desaparezcan debes ser el más <strong>rápido</strong> para pulsar la pantalla lo antes posible
+        </p>
+        <p>
+          Pero <strong>¡Cuidado!</strong>, si pulsas antes de que desaparezcan las 4 luces rojas, perderás un intento y se asignará que has tardado 2 segundos en reaccionar
+        </p>
+        <p>
+          Tendrás <strong>3 intentos</strong> para conseguir el mejor tiempo posible
+        </p>
+        <p>
+          En la siguiente imagen puedes ver lo que te encontrarás
+        </p>
+        <p>
+          Empieza usando la mano derecha
+        </p>
+        <p>
+          ¡Buena suerte!
+        </p>
+      </div>
+  
+      <img src="/assets/images/Game2.png" alt="Imagen Juego 2" class="game-image">
+
+        <div class="notice">
+            <p>
+                En cuanto pulses el botón, habrá una cuenta atrás y comenzará el juego.
+            </p>
+        </div>
+  
+      <button onclick="startGame()" class="orange-button">
+        Comenzar a Jugar
+      </button>
+    </div>
+  </div>
+
+  <footer style="background-color: #ff6600; padding: 1em; text-align: center;">
+    <p>&copy; Zurdos vs Diestros</p>
+  </footer>
+
+  <script>
+    function startGame() {
+      window.location.href = "/game2";
+    }
+  </script>
+
+</body>
+
+</html>
