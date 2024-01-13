@@ -16,38 +16,48 @@ header, footer {
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
- }
-
-/* Estilo para el rectángulo del menú */
-.menu-rectangle {
-    background-color: gray; /* Hace que todo el rectángulo sea gris */
-    color: white; /* Cambia el color del texto a blanco */
-    padding: 10px; /* Añade un poco de espacio alrededor del texto */
-    border-radius: 0px;
-
-}
-
-/* Estilo para el enlace del menú */
-.menu-link {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* Estilo para la flecha del menú */
-.back-to-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff6600;
+    padding: 1em;
+    color: #ffffff;
+   }
+   
+   .menu-button {
+    position: absolute;
+    left: 1em;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #ff6600;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+   
+   .menu-text {
+    background-color: gray;
+    padding: 5px;
+    border-radius: 5px;
     margin-right: 5px;
-    font-size: 20px;
-}
-
-/* Estilo para centrar el logo en el ancho completo del header */
-header img {
+   }
+   
+   .menu-arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(135deg);
+   }
+   
+   
+   
+   header img {
     width: auto;
-    margin: 0 auto;
-    max-width: 100%; /* Asegura que no exceda el ancho del contenedor padre */
-}
+    max-width: 100%;
+   }
 
 #content {
     flex-grow: 1;
