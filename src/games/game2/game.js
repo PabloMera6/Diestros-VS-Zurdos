@@ -6,12 +6,12 @@ export class Game extends Phaser.Scene {
     constructor() {
         super({ key: 'game' });
         this.scoreSent = false;
-        this.scoreKey = 'scoregame2-d'; // Por defecto
+        this.scoreKey = 'scoregame2d';
     }
 
     init(data) {
         if (data && data.secondAttempt) {
-          this.scoreKey = 'scoregame2-i';   
+          this.scoreKey = 'scoregame2i';   
         }
     }
 
@@ -27,24 +27,25 @@ export class Game extends Phaser.Scene {
         this.attempts = 3;
         this.currentAttempt = 0;
         this.bestTime = 2000;
+        this.lightsGroup = this.add.group();
         this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height);
 
         // Texto para mostrar el intento actual
         this.attemptText = this.add.text(this.width / 2, 50, '', {
             fontSize: '24px',
-            fill: '#fff',
-        }).setOrigin(0.5);
-
-        // Texto para mostrar el error
-        this.errorText = this.add.text(this.width / 2, this.height / 2, '', {
-            fontSize: '24px',
-            fill: '#fff',
+            fill: '#000',
+            backgroundColor: '#fff',
+            wordWrap: { width: this.width - 20, useAdvancedWrap: true },
+            align: 'center'
         }).setOrigin(0.5);
 
         // Texto para mostrar el tiempo de reacción
         this.reactionTimeText = this.add.text(this.width / 2, this.height / 4, '', {
             fontSize: '24px',
-            fill: '#fff',
+            fill: '#000',
+            backgroundColor: '#fff',
+            wordWrap: { width: this.width - 20, useAdvancedWrap: true },
+            align: 'center'
         }).setOrigin(0.5);
 
         // Comienza el primer intento
@@ -59,9 +60,8 @@ export class Game extends Phaser.Scene {
     
         let lightsRemaining = 4;
     
-        // Ajusta las coordenadas de posición para que los globos aparezcan en el centro de la pantalla y desde el píxel 100
         const centerX = this.width / 2;
-        const availableHeight = this.height - 300;  // Altura disponible después del píxel 100
+        const availableHeight = this.height - 300;
         const startY = 150;
     
         // Inicializa el evento para encender las luces uno por uno
@@ -82,26 +82,26 @@ export class Game extends Phaser.Scene {
             });
         }
     
-        // Inicializa el evento para desaparecer los globos después de un tiempo aleatorio
-        // Guarda el evento en una variable
-        this.hideEvent = this.time.delayedCall(5000, () => {
+        // Inicializa el evento para desaparecer los globos después de un tiempo aleatorio entre 1 y 3 segundos
+        const randomHideTime = Phaser.Math.Between(5000, 8000);
+        this.hideEvent = this.time.delayedCall(randomHideTime, () => {
             this.lightsGroup.children.iterate((light) => {
                 this.lightsGroup.killAndHide(light);
             });
-    
+
             this.startTime = this.time.now;
-    
+
             this.input.off('pointerdown', this.handleEarlyClick, this);
             this.input.on('pointerdown', this.handleReactionClick, this);
         });
+
     }
     
     
     handleEarlyClick() {
         this.lightsGroup.clear(true, true);
         this.calculateReactionTime(2000);
-        this.reactionTimeText.setText(`Espera a que desaparezcan las luces`);
-        this.errorText.setText(`Ha pulsado antes de tiempo`);
+        this.reactionTimeText.setText(`¡Ha pulsado antes de tiempo! Espera a que desaparezcan las 4 luces`);
         this.input.off('pointerdown', this.handleEarlyClick, this);
         this.input.off('pointerdown', this.handleReactionClick, this);
         // Detiene el evento hideEvent si está programado para ejecutarse
@@ -125,9 +125,12 @@ export class Game extends Phaser.Scene {
     showIntermediateScreen() {
 
         // Crea un botón para comenzar el próximo intento
-        this.nextButton = this.add.text(this.width / 2, this.height / 2, 'Realizar siguiente intento', {
+        this.nextButton = this.add.text(this.width / 2, this.height / 2 - 50, 'Realizar siguiente intento', {
             fontSize: '24px',
             fill: '#000',
+            backgroundColor: '#fff',
+            wordWrap: { width: this.width - 20, useAdvancedWrap: true },
+            align: 'center'
         }).setOrigin(0.5).setInteractive();
 
         if(this.currentAttempt === this.attempts) {
@@ -145,9 +148,7 @@ export class Game extends Phaser.Scene {
 
     handleReactionClick() {
         const reactionTime = this.calculateReactionTime();
-        this.reactionTimeText.setText(`Tiempo de Reacción: ${reactionTime} ms`);
-        this.errorText.setText(`!Enhorabuena!`);
-
+        this.reactionTimeText.setText(`Reacción en ${reactionTime} ms`);
         this.input.off('pointerdown', this.handleReactionClick, this);
 
         if (reactionTime < this.bestTime) {
@@ -169,7 +170,6 @@ export class Game extends Phaser.Scene {
 
     continueGame() {
         this.reactionTimeText.setText('');
-        this.errorText.setText('');
         this.startNewAttempt();
     }
 

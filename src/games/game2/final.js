@@ -27,6 +27,7 @@ export class Final extends Phaser.Scene {
     const congratsTextStyle = {
       fontSize: '36px',
       fill: '#000',
+      backgroundColor: '#fff',
       wordWrap: { width: this.width - 40 },
       align: 'center',
     };
@@ -38,6 +39,7 @@ export class Final extends Phaser.Scene {
     const instructionTextStyle = {
       fontSize: '24px',
       fill: '#000',
+      backgroundColor: '#fff',
       wordWrap: { width: this.width - 40 },
       align: 'center',
     };
@@ -47,7 +49,7 @@ export class Final extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
 
     instructionText.setInteractive().on('pointerdown', function () {
-      window.location.href = '/resultados1';
+      window.location.href = '/resultados2';
     }, this);
   }
 }

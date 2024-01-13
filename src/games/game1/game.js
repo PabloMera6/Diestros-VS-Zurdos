@@ -6,13 +6,13 @@ export class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'game' });
     this.scoreSent = false;
-    this.scoreKey = 'scoregame1-d'; // Por defecto
+    this.scoreKey = 'scoregame1d';
     this.resetedTime = false;
   }
 
   init(data) {
     if (data && data.secondAttempt) {
-      this.scoreKey = 'scoregame1-i';   
+      this.scoreKey = 'scoregame1i';   
     }
   }
 
@@ -110,7 +110,7 @@ export class Game extends Phaser.Scene {
   }
 
   update() {
-    if(this.scoreKey == 'scoregame1-i' && this.resetedTime == false) {
+    if(this.scoreKey == 'scoregame1i' && this.resetedTime == false) {
       this.startTime = this.time.now;
       this.endTime = this.startTime + 20000
       this.resetedTime = true;

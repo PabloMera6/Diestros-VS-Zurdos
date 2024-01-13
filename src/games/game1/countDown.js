@@ -27,6 +27,7 @@ export class CountDown extends Phaser.Scene {
         this.countdownText = this.add.text(this.width / 2, this.height / 2 - 50, this.countdown, {
             fontSize: '64px',
             fill: '#000',
+            backgroundColor: '#fff',
         });
         this.countdownText.setOrigin(0.5);
 

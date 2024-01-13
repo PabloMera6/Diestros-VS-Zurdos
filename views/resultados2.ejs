@@ -17,25 +17,25 @@
   <div id="content">
     <div class="notice">
       <p>
-        Estos son sus resultados en el juego de velocidad
+        Estos son sus resultados en el juego de reacción
       </p>
     </div>
    <h1 class="orange-box">Puntuación en el juego</h1>
-      <p><span class="highlight">Mano derecha: <%= datosUsuario1 %></span></p>
-      <p><span class="highlight">Mano izquierda: <%= datosUsuario2 %></span></p>
+      <p><span class="highlight">Mano derecha: <%= datosUsuario2d %></span></p>
+      <p><span class="highlight">Mano izquierda: <%= datosUsuario2i %></span></p>
 
    <h1 class="orange-box">Respecto al resto de jugadores</h1>
-      <% if (datosMedia1 > 0) { %>
-      <p><span class="highlight">¡Enhorabuena! Tu tiempo con la mano derecha es superior en <%= Math.round(datosMedia1) %>% a la media.</span></p>
-      <% } else if (datosMedia1 < 0) { %>
-      <p><span class="highlight">Tu tiempo con la mano derecha es inferior un <%= Math.round(Math.abs(datosMedia1)) %>% de la media. ¡Sigue practicando!</span></p>
+      <% if (datosMedia2d > 0) { %>
+        <p><span class="highlight">Tu tiempo con la mano derecha es inferior un <%= Math.abs(datosMedia2d) %>% de la media. ¡Sigue practicando!</span></p>
+      <% } else if (datosMedia2d < 0) { %>
+        <p><span class="highlight">¡Enhorabuena! Tu tiempo con la mano derecha es superior en <%= Math.round(Math.abs(datosMedia2d)) %>% a la media.</span></p>
       <% } else { %>
       <p><span class="highlight">Tu tiempo con la mano derecha es igual a la media.</span></p>
       <% } %>
-      <% if (datosMedia2 > 0) { %>
-      <p><span class="highlight">¡Enhorabuena! Tu tiempo con la mano izquierda es superior en <%= Math.round(datosMedia2) %>% a la media.</span></p>
+      <% if (datosMedia2i > 0) { %>
+        <p><span class="highlight">Tu tiempo con la mano izquierda es inferior un <%= Math.round(datosMedia2i) %>% de la media. ¡Sigue practicando!</span></p>
       <% } else if (datosMedia2 < 0) { %>
-      <p><span class="highlight">Tu tiempo con la mano izquierda es inferior un <%= Math.round(Math.abs(datosMedia2)) %>% de la media. ¡Sigue practicando!</span></p>
+        <p><span class="highlight">¡Enhorabuena! Tu tiempo con la mano izquierda es superior en <%= Math.round(Math.abs(datosMedia2i)) %>% a la media.</span></p>
       <% } else { %>
       <p><span class="highlight">Tu tiempo con la mano izquierda es igual a la media.</span></p>
       <% } %>

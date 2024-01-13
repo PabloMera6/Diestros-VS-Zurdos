@@ -15,6 +15,40 @@ header, footer {
     color: #ffffff;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ }
+
+/* Estilo para el rectángulo del menú */
+.menu-rectangle {
+    background-color: gray; /* Hace que todo el rectángulo sea gris */
+    color: white; /* Cambia el color del texto a blanco */
+    padding: 10px; /* Añade un poco de espacio alrededor del texto */
+    border-radius: 0px;
+
+}
+
+/* Estilo para el enlace del menú */
+.menu-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Estilo para la flecha del menú */
+.back-to-menu {
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+/* Estilo para centrar el logo en el ancho completo del header */
+header img {
+    width: auto;
+    margin: 0 auto;
+    max-width: 100%; /* Asegura que no exceda el ancho del contenedor padre */
+}
+
 #content {
     flex-grow: 1;
     display: flex;
