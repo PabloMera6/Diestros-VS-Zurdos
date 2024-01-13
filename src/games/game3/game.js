@@ -1,15 +1,22 @@
+import ScreenController from './screenController.js';
+
+let gameAttempts = 0;
+
 export class Game extends Phaser.Scene {
     constructor() {
         super({ key: 'game' });
     }
 
     preload() {
-        this.load.image('fondo', 'assets/images/fondo.jpg');
-        this.load.image('pajaro', 'assets/images/pc.png');
+        this.load.image('background', 'assets/images/fondo-pajaro.jpg');
+        this.load.image('pajaro', 'assets/images/pajaro-amarillo.png');
     }
 
     create() {
-        this.fondo = this.add.tileSprite(480, 320, 960, 640, 'fondo').setScrollFactor(0);
+        this.screenController = new ScreenController(this);
+        this.width = this.screenController.getWidth();
+        this.height = this.screenController.getHeight();
+        this.fondo = this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height).setScrollFactor(0);
         this.player = this.physics.add.sprite(50, 100, 'pajaro');
 
         this.anims.create({
@@ -18,7 +25,6 @@ export class Game extends Phaser.Scene {
             frameRate: 10,
             repeat: -1,
         });
-        this.player.play('fly');
 
         this.input.on('pointerdown', () => this.jump());
         this.newPipe();

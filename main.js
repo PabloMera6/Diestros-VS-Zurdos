@@ -299,7 +299,98 @@ server.get('/resultados2', async (req, res) => {
   }
 });
 
+server.get('/introduccion-3', (req, res) => {
+  const indexPath = path.join(__dirname, 'src/games/game3/introduccion.html');
+  res.sendFile(indexPath);
+});
+
 server.get('/game3', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game3/index3.html');
   res.sendFile(indexPath);
+});
+
+server.post("/gamesave3-a", async (request, response, next) => {
+  try {
+    const userId = new ObjectId(request.session.userId);
+    const { scoregame3d } = request.body;
+    console.log(scoregame3d);
+    console.log(userId);
+    if (!userId || isNaN(scoregame3d)) {
+      return response.status(400).json({ error: 'Parámetros incorrectos.' });
+    }
+
+    await collection.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          scoregame3d: parseFloat(scoregame3d)
+        },
+      },
+      { upsert: true }
+    );
+    
+    response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+server.post("/gamesave3-b", async (request, response, next) => {
+  try {
+    const userId = new ObjectId(request.session.userId);
+    const { scoregame3i } = request.body;
+
+    if (!userId || isNaN(scoregame3i)) {
+      return response.status(400).json({ error: 'Parámetros incorrectos.' });
+    }
+
+    await collection.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          scoregame3i: parseFloat(scoregame3i)
+        },
+      },
+      { upsert: true }
+    );
+
+    response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+server.get('/resultados3', async (req, res) => {
+  try {
+    const userId = new ObjectId(req.session.userId);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'ID de usuario no válido.' });
+    }
+
+    const userData = await collection.findOne({ _id: userId });
+
+    if (!userData) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    const averageData = await collection.aggregate([
+      {
+        $group: {
+          _id: null,
+          mediagame3d: { $avg: '$scoregame3d' },
+          mediagame3i: { $avg: '$scoregame3i' },
+        },
+      },
+    ]).toArray();
+    const porcentajeRespectoMediaDerecha = ((userData.scoregame3d - averageData[0].mediagame3d) / averageData[0].mediagame3d) * 100;
+    const porcentajeRespectoMediaIzquierda = ((userData.scoregame3i - averageData[0].mediagame3i) / averageData[0].mediagame3i) * 100;
+
+    res.render('resultados2', { datosUsuario3d: userData.scoregame3d, datosUsuario3i: userData.scoregame3i, datosMedia3d: porcentajeRespectoMediaDerecha, datosMedia3i: porcentajeRespectoMediaIzquierda });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
 });
