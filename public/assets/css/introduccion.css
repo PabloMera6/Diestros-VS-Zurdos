@@ -79,20 +79,20 @@ header {
   .text-container p {
     display: block;
     margin: 0 auto;
-    max-width: 600px; /* O ajusta según sea necesario */
+    max-width: 600px;
   }
   
 
 .game-image {
-    width: 100%; /* La imagen ocupará todo el ancho disponible */
-    max-width: 600px; /* Pero no superará los 600px de ancho */
-    height: auto; /* La altura se ajustará proporcionalmente */
-    margin-top: 1em; /* Espaciado entre la imagen y el botón */
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin-top: 1em;
 }
 
 .notice {
     text-align: center;
-    margin-top: 20px; /* Ajusta según sea necesario */
+    margin-top: 20px;
   }
   
   .notice p {
@@ -112,7 +112,7 @@ header {
     width: 100%;
     box-sizing: border-box;
     text-align: center;
-    margin-top: 1em; /* Espaciado entre la imagen y el botón */
+    margin-top: 1em;
 }
 
 .orange-button:hover {

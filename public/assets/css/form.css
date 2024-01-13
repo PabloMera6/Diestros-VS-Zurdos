@@ -62,6 +62,7 @@ button {
     cursor: pointer;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 1em;
 }
 
 button:hover {
