@@ -10,7 +10,7 @@ body {
 }
 
 header, footer {
-    background-color: #ff6600;
+    background-color: #00ADB5;
     padding: 1em;
     color: #ffffff;
 }
@@ -19,7 +19,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ff6600;
+    background-color: #00ADB5;
     padding: 1em;
     color: #ffffff;
    }
@@ -30,7 +30,7 @@ header {
     border: none;
     border-radius: 5px;
     padding: 10px;
-    background-color: #ff6600;
+    background-color: #00ADB5;
     color: #ffffff;
     display: flex;
     justify-content: center;
@@ -104,7 +104,7 @@ header {
     overflow: hidden;
     padding: 15px;
     font-size: 18px;
-    background-color: #ff6600;
+    background-color: #00ADB5;
     color: white;
     border: none;
     border-radius: 5px;
@@ -116,5 +116,5 @@ header {
 }
 
 .orange-button:hover {
-    background-color: #e55d00;
+    background-color: #00ADB5;
 }

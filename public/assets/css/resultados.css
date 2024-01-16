@@ -10,7 +10,7 @@ body {
  }
  
  header, footer {
-  background-color: #ff6600;
+  background-color: #00ADB5;
   padding: 1em;
   color: #ffffff;
  }
@@ -25,7 +25,7 @@ body {
  }
  
  .orange-box {
-  background-color: orange;
+  background-color: #00ADB5;
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
@@ -63,7 +63,7 @@ body {
   overflow: hidden;
   padding: 15px;
   font-size: 18px;
-  background-color: #ff6600;
+  background-color: #00ADB5;
   color: white;
   border: none;
   border-radius: 5px;
@@ -76,6 +76,6 @@ body {
  }
  
  .orange-button:hover {
-  background-color: #e55d00;
+  background-color: #00ADB5;
  }
  
