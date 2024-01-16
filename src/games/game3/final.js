@@ -32,8 +32,9 @@ export class Final extends Phaser.Scene {
       align: 'center',
     };
 
+    const tiempo = (this.puntuacion/1000).toFixed(2);
     const congratsText = this.add
-      .text(this.width / 2, this.height / 4, `¡Enhorabuena! Su puntuación con la mano izquierda es ${this.puntuacion}`, congratsTextStyle)
+      .text(this.width / 2, this.height / 4, `¡Enhorabuena! Su tiempo con la mano izquierda es de ${tiempo} segundos`, congratsTextStyle)
       .setOrigin(0.5, 0.5);
 
     const instructionTextStyle = {
@@ -49,7 +50,7 @@ export class Final extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
 
     instructionText.setInteractive().on('pointerdown', function () {
-      window.location.href = '/resultados2';
+      window.location.href = '/resultados3';
     }, this);
   }
 }

@@ -17,15 +17,24 @@ export class Game extends Phaser.Scene {
     }
 
     init(data) {
-        if (data && data.secondAttempt) {
-          this.scoreKey = 'scoregame3i';   
-        }
-    }
+      if (data && data.secondAttempt) {
+          this.scoreKey = 'scoregame3i';
+          choque = false;
+          this.initialStage = true;
+          this.intermediateStage = false;
+          this.finalStage = false;
+          this.startTime = this.time.now;
+          this.resetedTime = false;
+      }
+   }
+   
 
 
     preload() {
         this.load.image('background', 'assets/images/fondo-tubo.jpg');
-        this.load.image('pajaro', 'assets/images/pajaro-alto.png');
+        this.load.image('pajaro-arriba', 'assets/images/pajaro-alto.png');
+        this.load.image('pajaro-bajo', 'assets/images/pajaro-bajo.png');
+        this.load.image('pajaro-choque', 'assets/images/pajaro-choque.png');
         this.load.image('tuberia', 'assets/images/tubo-35.png');
         this.load.image('tuberia-arriba', 'assets/images/tubo-arriba.png');
         this.load.image('tuberia-abajo', 'assets/images/tubo-abajo.png');
@@ -43,13 +52,18 @@ export class Game extends Phaser.Scene {
         this.background.setTileScale(this.height / bounds.height); // Escala la imagen de fondo según el alto de la pantalla
         this.background.setTilePosition(0, bounds.height - this.height); // Posiciona la imagen de fondo para que se muestre la parte de abaj
 
-        this.player = this.physics.add.sprite(50, 100, 'pajaro');
+        this.player = this.physics.add.sprite(50, 100, 'pajaro-arriba');
 
         this.timeText = this.add.text(this.width - 50, 10, '', {
-            fontSize: '32px',
-            fill: '#fff',
-            id: 'time'
-          });
+          fontSize: '32px',
+          fill: '#fff',
+          stroke: '#000',
+          strokeThickness: 5,
+          fontStyle: 'bold',
+          backgroundColor: '#3652AD',
+          id: 'time'
+        });
+       
         this.timeText.setOrigin(0.5, 0);
 
         this.input.on('pointerdown', () => this.jump());
@@ -66,15 +80,16 @@ export class Game extends Phaser.Scene {
     }
 
     jump() {
-        if (!this.initialStage) {
-            this.player.setVelocityY(-250); // Aumenta la velocidad del pájaro después de los primeros 10 segundos
-        } else {
-            this.player.setVelocityY(-200);
-        }
+      this.player.setTexture('pajaro-bajo');
+      setTimeout(() => {
+          this.player.setTexture('pajaro-arriba');
+      }, 500);
+      
+      this.player.setVelocityY(-200);
+  
     }
-
-    // Declara una variable global para almacenar el hueco anterior
-
+    
+   
     newPipe() {
         const tuberia = this.physics.add.group();
         const numTubes = Math.floor(this.height / 35);
@@ -93,19 +108,34 @@ export class Game extends Phaser.Scene {
                     hueco = Math.floor(numTubes / 2) + 1;
                     break;
             }
-        } else if(this.intermediateStage) {
+            for (let i = 0; i <= numTubes; i++) {
+            if (i !== hueco - 1 && i !== hueco + 1 && i !== hueco && i !== hueco - 2 && i !== hueco + 2 && i !== hueco - 3 && i !== hueco + 3) {
+              let bloque;
+              if(i == hueco - 4){
+                  bloque = tuberia.create(1000, i * 35, 'tuberia-abajo');
+              }else if(i == hueco + 4){
+                  bloque = tuberia.create(1000, i * 35, 'tuberia-arriba');
+              }
+              else{
+                  bloque = tuberia.create(1000, i * 35, 'tuberia');
+              }
+              bloque.body.allowGravity = false;
+              tuberia.setVelocityX(-200);
+
+            }
+          }
+        }
+        else{
+          if(this.intermediateStage) {
             // Después de los primeros 10 segundos, el hueco puede estar en cualquier lugar
             // Pero no más de 4 huecos por encima o por debajo del hueco anterior
             // Ni en la zona más baja y más alta de la pantalla
             hueco = Phaser.Math.Between(Math.max(2, huecoAnterior - 4), Math.min(numTubes - 1, huecoAnterior + 4));
-        }else if(this.finalStage){
-            hueco = Math.floor(Math.random() * numTubes) + 1;         
-        }
-
-        // Guarda el valor del hueco actual para la próxima vez
-        huecoAnterior = hueco;
-
-        for (let i = 0; i <= numTubes; i++) {
+          }else if(this.finalStage){
+            hueco = Math.floor(Math.random() * numTubes) + 1; 
+          }
+          
+          for (let i = 0; i <= numTubes; i++) {
             if (i !== hueco - 1 && i !== hueco + 1 && i !== hueco && i !== hueco - 2 && i !== hueco + 2) {
                 let bloque;
                 if(i == hueco - 3){
@@ -117,10 +147,13 @@ export class Game extends Phaser.Scene {
                     bloque = tuberia.create(1000, i * 35, 'tuberia');
                 }
                 bloque.body.allowGravity = false;
+                tuberia.setVelocityX(-250);
             }
+          } 
         }
+
+        huecoAnterior = hueco;
     
-        tuberia.setVelocityX(-200);
         tuberia.checkWorldBounds = true;
         tuberia.outOfBoundsKill = true;
         this.time.delayedCall(2000, this.newPipe, [], this);
@@ -136,57 +169,57 @@ export class Game extends Phaser.Scene {
     }
 
     hitPipe() {
-        choque = true;
+      choque = true;
     }
+   
 
     update(time){
-        this.background.tilePositionX = time*0.1;
-        if(this.scoreKey == 'scoregame3i' && this.resetedTime == false) {
-            this.startTime = this.time.now;
-            this.resetedTime = true;
+      this.background.tilePositionX = time*0.1;
+      if(this.scoreKey == 'scoregame3i' && this.resetedTime == false) {
+          this.startTime = this.time.now;
+          this.resetedTime = true;
+      }
+      let elapsedTime;
+      elapsedTime = this.time.now - this.startTime;
+      if (choque) {
+        this.timeText.setText('Tiempo: ${elapsedTime}');
+  
+        if (!this.scoreSent) {
+          const finalScore = elapsedTime.toFixed(2);
+          let apiUrl = '/gamesave3-a';
+          if (gameAttempts == 1) {
+            apiUrl = '/gamesave3-b';
           }
-          let elapsedTime;
-          elapsedTime = this.time.now - this.startTime;
-          if (choque) {
-            this.timeText.setText('Tiempo: ${elapsedTime}');
-      
-            if (!this.scoreSent) {
-              const finalScore = elapsedTime;
-              let apiUrl = '/gamesave3-a';
-              if (gameAttempts == 1) {
-                apiUrl = '/gamesave3-b';
-              }
-              const requestBody = {};
-              requestBody[this.scoreKey] = finalScore;
-      
-              fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-              })
-                .then(response => response.json())
-                .then(data => {
-                  console.log(data.message);
-                })
-                .catch(error => {
-                  console.error('Error al enviar la puntuación:', error);
-                });
-      
-              this.scoreSent = true;
-              this.choque = false;
-              gameAttempts++;
-      
-              if (gameAttempts < 2) {
-                this.scene.start('intermediate', { score1: finalScore });
-              } else {
-                this.scene.start('final', { score2: finalScore });
-              }
-            }
+          const requestBody = {};
+          requestBody[this.scoreKey] = finalScore;
+  
+          fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.message);
+            })
+            .catch(error => {
+              console.error('Error al enviar la puntuación:', error);
+            });
+  
+          this.scoreSent = true;
+          gameAttempts++;
+  
+          if (gameAttempts < 2) {
+            this.scene.start('intermediate', { score1: finalScore });
           } else {
-            let elapsedTime = Math.ceil((this.time.now - this.startTime ) / 1000);
-            this.timeText.setText(`${elapsedTime}`);
+            this.scene.start('final', { score2: finalScore });
           }
         }
+      } else {
+        let elapsedTime = Math.ceil((this.time.now - this.startTime ) / 1000);
+        this.timeText.setText(`${elapsedTime}`);
+      }
+    }
 }

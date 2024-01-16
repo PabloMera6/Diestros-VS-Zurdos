@@ -148,7 +148,7 @@ export class Game extends Phaser.Scene {
 
     handleReactionClick() {
         const reactionTime = this.calculateReactionTime();
-        this.reactionTimeText.setText(`Reacción en ${reactionTime} ms`);
+        this.reactionTimeText.setText(`Reacción en ${reactionTime} milisegundos`);
         this.input.off('pointerdown', this.handleReactionClick, this);
 
         if (reactionTime < this.bestTime) {
@@ -191,19 +191,6 @@ export class Game extends Phaser.Scene {
     endGame() {
         // Oculta el texto del intento actual
         this.attemptText.setVisible(false);
-
-        // Muestra el mejor tiempo al final del juego
-        /*if (this.bestTime !== 2000) {
-            this.add.text(this.width / 2, this.height / 2, `Su mejor tiempo es de: ${this.bestTime} ms`, {
-                fontSize: '32px',
-                fill: '#fff',
-            }).setOrigin(0.5);
-        } else {
-            this.add.text(this.width / 2, this.height / 2, 'No ha tenido intentos exitosos, por lo que su tiempo es de 2000 ms', {
-                fontSize: '32px',
-                fill: '#fff',
-            }).setOrigin(0.5);
-        }*/
 
         const finalScore = this.bestTime;
         let apiUrl = '/gamesave2-a';
