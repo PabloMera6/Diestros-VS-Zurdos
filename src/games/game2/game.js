@@ -17,7 +17,7 @@ export class Game extends Phaser.Scene {
 
     preload() {
         this.load.image('background', 'assets/images/fondo-coche1.jpg');
-        this.load.image('redLight', 'assets/images/semaforo (1).png');
+        this.load.image('redLight', 'assets/images/semaforo.png');
     }
 
     create() {
