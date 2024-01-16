@@ -15,7 +15,7 @@ export class CountDown extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'assets/images/fondo-pajaro.jpg');
+        this.load.image('background', 'assets/images/fondo-tubo.jpg');
     }
 
     create() {
