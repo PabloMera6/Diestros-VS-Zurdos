@@ -49,14 +49,6 @@ header, footer {
     margin-bottom: 1em;
 }
 
-.game-image {
-    width: 100%;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-}
 
 .orange-button:hover {
     background-color: #00ADB5;

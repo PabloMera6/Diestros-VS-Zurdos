@@ -17,7 +17,7 @@
 
   <div id="content">
     <h1 class="orange-box">Resultados según la mano con la que usa el móvil</h1>
-    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en la mano con la que usa el móvil, la <%= mano_uso_usuario %>, la cuál usan <%= usersManoUso.length %> usuarios que han disfrutado del juego y serán con los que se comparará sus datos</p>
+    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en la mano con la que usa el móvil, la <strong><%= mano_uso_usuario %></strong>, la cuál usan también <strong><%= usersManoUso.length %> usuarios</strong> y serán con los que se comparará sus datos</p>
 
     <h2 class="orange-box">Velocidad (Derecha)</h2>
     <% let playerScore1d = userScoreAboveAverage.score1dAboveAverage + averageScores[0].avgScoreGame1d; %>

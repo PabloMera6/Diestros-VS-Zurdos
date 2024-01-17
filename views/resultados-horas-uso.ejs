@@ -17,7 +17,7 @@
 
   <div id="content">
     <h1 class="orange-box">Resultados según las horas que usa el móvil al día</h1>
-    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en las horas que usa el móvil al día, su rango es <%= horas_uso_usuario_texto %>, el mismo <%= usersHorasUso.length %> usuarios que han disfrutado del juego y serán con los que se comparará sus datos</p>
+    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en las horas que usa el móvil al día, su rango es de <strong><%= horas_uso_usuario_texto %></strong>, que coincide con <strong><%= usersHorasUso.length %> usuarios</strong> más y serán con los que se comparará sus datos</p>
 
     <h2 class="orange-box">Velocidad (Derecha)</h2>
     <% let playerScore1d = userScoreAboveAverage.score1dAboveAverage + averageScores[0].avgScoreGame1d; %>

@@ -17,7 +17,7 @@
 
   <div id="content">
     <h1 class="orange-box">Resultados según su edad</h1>
-    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en su rango de edad. Se le asigna el rango <%= rangoEdad %> al cuál también pertenecen <%= usersInRange.length %> usuarios que han disfrutado del juego y serán con los que se comparará sus datos</p>
+    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en su rango de edad. Se le asigna el rango de <strong><%= rangoEdad %></strong> al cuál también pertenecen <strong><%= usersInRange.length %> usuarios</strong> más y serán con los que se comparará sus datos</p>
 
     <h2 class="orange-box">Velocidad (Derecha)</h2>
     <% let playerScore1d = userScoreAboveAverage.score1dAboveAverage + averageScores[0].avgScoreGame1d; %>
@@ -44,6 +44,7 @@
     <h2 class="orange-box">Reacción (Derecha)</h2>
     <% let playerScore2d = userScoreAboveAverage.score2dAboveAverage + averageScores[0].avgScoreGame2d; %>
     <p>Tiempo: <%= playerScore2d %> milisegundos</p>
+    <p>Tiempo medio: <%= userScoreAboveAverage.score2dAboveAverage %></p>
     <p>Lugar en el ranking de reacción con la mano derecha según su edad:</p>
     <p><span class="ranking-number"><%= rankingUser2d.rank %></span></p>
     <% if (playerScore2d < averageScores[0].avgScoreGame2d) { %>

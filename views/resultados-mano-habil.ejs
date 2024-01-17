@@ -17,7 +17,7 @@
 
   <div id="content">
     <h1 class="orange-box">Resultados según su mano hábil</h1>
-    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en su mano hábil, la <%= mano_habil_usuario %>, la cuál usan <%= usersManoHabil.length %> usuarios que han disfrutado del juego y serán con los que se comparará sus datos</p>
+    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en su mano hábil, la <strong><%= mano_habil_usuario %></strong>, la cuál usan <strong><%= usersManoHabil.length %> usuarios</strong> que han disfrutado del juego y serán con los que se comparará sus datos</p>
 
     <h2 class="orange-box">Velocidad (Derecha)</h2>
     <% let playerScore1d = userScoreAboveAverage.score1dAboveAverage + averageScores[0].avgScoreGame1d; %>
