@@ -490,9 +490,24 @@ server.get('/resultados-edad', async(req, res) => {
       score3iAboveAverage: user.scoregame3i - averageScores[0].avgScoreGame3i,
     }));
 
+    // Función de comparación personalizada para manejar NaN
+    const compareNumbers = (a, b) => {
+      if (isNaN(a) && isNaN(b)) {
+        return 0;
+      } else if (isNaN(a)) {
+        return -1;
+      } else if (isNaN(b)) {
+        return 1;
+      }
+      return a - b;
+    };
+    
     // Ordenar los usuarios por su puntuación en cada juego
-    const sortedUsers = scoresAboveAverage.sort((a, b) => b.scoregame1d - a.scoregame1d);
-
+    const sortedUsers = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers(b.score1dAboveAverage, a.score1dAboveAverage);
+    });
+     
+    
     // Asignar un rango a cada usuario
     const rankedUsers = sortedUsers.map((user, index) => ({
       ...user,
@@ -500,9 +515,15 @@ server.get('/resultados-edad', async(req, res) => {
     }));
 
     // Buscar el rango del usuario actual en cada juego
-    const currentUserRankings = rankedUsers.find((user) => user._id === userId);
+    const currentRankingUser = rankedUsers.find((user) => {
+      console.log('user._id:', user._id);
+      console.log('userId:', userId);
+      return user._id.equals(userId) ;
+     });
+
+    rankingUser = currentRankingUser.rank;
      
-    res.render('resultados-edad', { rangoEdad, usersInRange, averageScores, rankedUsers, currentUserRankings });
+    res.render('resultados-edad', { rangoEdad, scoresAboveAverage, usersInRange, sortedUsers, averageScores, rankedUsers, currentUserRankings });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });

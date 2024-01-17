@@ -32,3 +32,26 @@
  <li>Juego 3 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank3i %><% } %></li>
 </ul>
 
+<h2>Ranking del Usuario Actual</h2>
+<ul>
+ <li>Juego 1 Derecho: <% sortedUsers %></li>
+</ul>
+
+<h2>Puntuaciones Por Encima de la Media</h2>
+<ul>
+ <% scoresAboveAverage.forEach((user) => { %>
+  <li>
+    Nombre: <%= user.nombre %> - Edad: <%= user.edad %>
+    <ul>
+      <li>Juego 1 Derecho: <%= user.score1dAboveAverage %></li>
+      <li>Juego 1 Izquierdo: <%= user.score1iAboveAverage %></li>
+      <li>Juego 2 Derecho: <%= user.score2dAboveAverage %></li>
+      <li>Juego 2 Izquierdo: <%= user.score2iAboveAverage %></li>
+      <li>Juego 3 Derecho: <%= user.score3dAboveAverage %></li>
+      <li>Juego 3 Izquierdo: <%= user.score3iAboveAverage %></li>
+    </ul>
+  </li>
+ <% }) %>
+</ul>
+
+
