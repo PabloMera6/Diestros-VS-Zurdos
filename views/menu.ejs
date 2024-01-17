@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <header style="background-color: #00ADB5; padding: 1em; text-align: center;">
+  <header>
     <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
   </header>
 
@@ -28,11 +28,18 @@
           Juego de Coordinación
           <img src="/assets/images/pulso.jpg" alt="Guía para el Juego" class="game-image">
         </a>
+        <% if (mostrar_resultados) { %>
+          <a href="/resultados-finales" class="orange-button">
+            Ver resultados finales
+            <img src="/assets/images/pulso.jpg" alt="Guía para el Juego" class="game-image">
+          </a>
+        <% } %>
+
       </div>
     </div>
   </div>
 
-  <footer style="background-color: #00ADB5; padding: 1em; text-align: center;">
+  <footer>
     <p>&copy; Zurdos vs Diestros</p>
   </footer>
 

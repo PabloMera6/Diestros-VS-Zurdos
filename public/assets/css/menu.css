@@ -10,7 +10,7 @@ body {
 }
 
 header, footer {
-    background-color: #ff6600;
+    background-color: #00ADB5;
     padding: 1em;
     color: #ffffff;
 }
@@ -30,12 +30,12 @@ header, footer {
 .buttons {
     display: flex;
     flex-direction: column;
-    gap: 1em; /* Espaciado vertical entre los botones */
+    gap: 1em;
 }
 
 .orange-button {
     position: relative;
-    overflow: hidden; /* Añadido para prevenir la superposición */
+    overflow: hidden;
     padding: 15px;
     font-size: 18px;
     background-color: #00ADB5;
@@ -46,18 +46,18 @@ header, footer {
     width: 100%;
     box-sizing: border-box;
     text-align: center;
-    margin-bottom: 1em; /* Espaciado entre los botones */
+    margin-bottom: 1em;
 }
 
 .game-image {
-    width: 100%; /* La imagen ocupará todo el ancho del botón */
+    width: 100%;
     border-radius: 5px;
     position: absolute;
     bottom: 0;
     left: 0;
-    z-index: -1; /* Añadido para situar la imagen detrás del botón */
+    z-index: -1;
 }
 
 .orange-button:hover {
-    background-color: #e55d00;
+    background-color: #00ADB5;
 }

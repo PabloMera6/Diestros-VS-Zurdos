@@ -1,0 +1,34 @@
+<!-- Archivo resultados-edad.ejs -->
+
+<h1>Resultados de Edad</h1>
+
+<h2>Rango de Edad</h2>
+<p><%= rangoEdad %></p>
+
+<h2>Usuarios en Rango de Edad</h2>
+<ul>
+ <% usersInRange.forEach((user) => { %>
+ <li><%= user.nombre %> - <%= user.edad %></li>
+ <% }) %>
+</ul>
+
+<h2>Puntuaciones Medias</h2>
+<ul>
+ <li>Juego 1 Derecho: <%= averageScores[0].avgScoreGame1d %></li>
+ <li>Juego 1 Izquierdo: <%= averageScores[0].avgScoreGame1i %></li>
+ <li>Juego 2 Derecho: <%= averageScores[0].avgScoreGame2d %></li>
+ <li>Juego 2 Izquierdo: <%= averageScores[0].avgScoreGame2i %></li>
+ <li>Juego 3 Derecho: <%= averageScores[0].avgScoreGame3d %></li>
+ <li>Juego 3 Izquierdo: <%= averageScores[0].avgScoreGame3i %></li>
+</ul>
+
+<h2>Ranking del Usuario Actual</h2>
+<ul>
+ <li>Juego 1 Derecho: <% if (currentUserRankings) { %><%= currentUserRankings.rank1d %><% } %></li>
+ <li>Juego 1 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank1i %><% } %></li>
+ <li>Juego 2 Derecho: <% if (currentUserRankings) { %><%= currentUserRankings.rank2d %><% } %></li>
+ <li>Juego 2 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank2i %><% } %></li>
+ <li>Juego 3 Derecho: <% if (currentUserRankings) { %><%= currentUserRankings.rank3d %><% } %></li>
+ <li>Juego 3 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank3i %><% } %></li>
+</ul>
+

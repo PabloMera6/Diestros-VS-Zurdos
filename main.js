@@ -13,6 +13,7 @@ server.use('/src/games/form', express.static(path.join(__dirname + '/src/games/f
 server.use('/src/games/game1', express.static(path.join(__dirname, 'src/games/game1')));
 server.use('/src/games/game2', express.static(path.join(__dirname, 'src/games/game2')));
 server.use('/src/games/game3', express.static(path.join(__dirname, 'src/games/game3')));
+server.use('/src/resultados', express.static(path.join(__dirname, 'src/resultados')));
 server.set('views', path.join(__dirname, 'views'));
 
 server.use(BodyParser.json());
@@ -101,10 +102,23 @@ server.post("/form", async (request, response, next) => {
   }
 });
 
+server.get('/menu', async (req, res) => {
+  let mostrar_resultados = false;
+  const userId = new ObjectId(req.session.userId);
+  const userData = await collection.findOne({ 
+    _id: userId, 
+    scoregame1d: { $exists: true },
+    scoregame1i: { $exists: true },
+    scoregame2d: { $exists: true },
+    scoregame2i: { $exists: true },
+    scoregame3d: { $exists: true },
+    scoregame3i: { $exists: true },
+  });
 
-server.get('/menu', (req, res) => {
-  const indexPath = path.join(__dirname, 'src/games/menu/menu.html');
-  res.sendFile(indexPath);
+  if (userData) {
+    mostrar_resultados = true;
+  }
+  res.render('menu', { mostrar_resultados });
 });
 
 server.get('/introduccion-1', (req, res) => {
@@ -389,6 +403,106 @@ server.get('/resultados3', async (req, res) => {
     const porcentajeRespectoMediaIzquierda = ((userData.scoregame3i - averageData[0].mediagame3i) / averageData[0].mediagame3i) * 100;
 
     res.render('resultados3', { datosUsuario3d: userData.scoregame3d, datosUsuario3i: userData.scoregame3i, datosMedia3d: porcentajeRespectoMediaDerecha, datosMedia3i: porcentajeRespectoMediaIzquierda });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+});
+
+server.get('/resultados-finales', (req, res) => {
+  const indexPath = path.join(__dirname, 'src/resultados/resultados-finales.html');
+  res.sendFile(indexPath);
+});
+
+server.get('/resultados-edad', async(req, res) => {
+  try {
+    const userId = new ObjectId(req.session.userId);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'ID de usuario no válido.' });
+    }
+
+    const userData = await collection.findOne({ _id: userId });
+
+    if (!userData) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+    const ageRanges = {
+      'Inferior a 14 años': { min: 3, max: 14 },
+      '15 a 17 años': { min: 15, max: 17 },
+      '18 a 24 años': { min: 18, max: 24 },
+      '25 a 35 años': { min: 25, max: 35 },
+      '36 a 45 años': { min: 36, max: 45 },
+      '46 a 60 años': { min: 46, max: 60 },
+      'Superior a 60 años': { min: 61, max: 99 },
+     };
+     
+    let rangoEdad;
+    const edad_usuario = userData.edad;
+
+    if (edad_usuario <= 14) {
+    rangoEdad = 'Inferior a 14 años';
+    } else if (edad_usuario >= 15 && edad_usuario <= 17) {
+    rangoEdad = '15 a 17 años';
+    } else if (edad_usuario >= 18 && edad_usuario <= 24) {
+    rangoEdad = '18 a 24 años';
+    } else if (edad_usuario >= 25 && edad_usuario <= 35) {
+    rangoEdad = '25 a 35 años';
+    } else if (edad_usuario >= 36 && edad_usuario <= 45) {
+    rangoEdad = '36 a 45 años';
+    } else if (edad_usuario >= 46 && edad_usuario <= 60) {
+    rangoEdad = '46 a 60 años';
+    } else {
+    rangoEdad = 'Superior a 60 años';
+    }
+
+    const { min: minAge, max: maxAge } = ageRanges[rangoEdad];
+    
+    const usersInRange = await collection.find({
+      edad: { $gte: minAge, $lte: maxAge }
+     }).toArray();
+
+    const averageScores = await collection.aggregate([
+    {
+    $match: { edad: { $gte: minAge, $lte: maxAge } },
+    },
+    {
+    $group: {
+      _id: null,
+      avgScoreGame1d: { $avg: { $ifNull: ['$scoregame1d', 0] } },
+      avgScoreGame1i: { $avg: { $ifNull: ['$scoregame1i', 0] } },
+      avgScoreGame2d: { $avg: { $ifNull: ['$scoregame2d', 0] } },
+      avgScoreGame2i: { $avg: { $ifNull: ['$scoregame2i', 0] } },
+      avgScoreGame3d: { $avg: { $ifNull: ['$scoregame3d', 0] } },
+      avgScoreGame3i: { $avg: { $ifNull: ['$scoregame3i', 0] } },
+    },
+    },
+    ]).toArray();
+
+    // Calcular la puntuación de cada usuario por encima de la media para cada juego
+    const scoresAboveAverage = usersInRange.map((user) => ({
+      ...user,
+      score1dAboveAverage: user.scoregame1d - averageScores[0].avgScoreGame1d,
+      score1iAboveAverage: user.scoregame1i - averageScores[0].avgScoreGame1i,
+      score2dAboveAverage: user.scoregame2d - averageScores[0].avgScoreGame2d,
+      score2iAboveAverage: user.scoregame2i - averageScores[0].avgScoreGame2i,
+      score3dAboveAverage: user.scoregame3d - averageScores[0].avgScoreGame3d,
+      score3iAboveAverage: user.scoregame3i - averageScores[0].avgScoreGame3i,
+    }));
+
+    // Ordenar los usuarios por su puntuación en cada juego
+    const sortedUsers = scoresAboveAverage.sort((a, b) => b.scoregame1d - a.scoregame1d);
+
+    // Asignar un rango a cada usuario
+    const rankedUsers = sortedUsers.map((user, index) => ({
+      ...user,
+      rank: index + 1,
+    }));
+
+    // Buscar el rango del usuario actual en cada juego
+    const currentUserRankings = rankedUsers.find((user) => user._id === userId);
+     
+    res.render('resultados-edad', { rangoEdad, usersInRange, averageScores, rankedUsers, currentUserRankings });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
