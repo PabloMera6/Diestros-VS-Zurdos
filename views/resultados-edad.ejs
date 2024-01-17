@@ -1,57 +1,98 @@
-<!-- Archivo resultados-edad.ejs -->
+<!DOCTYPE html>
+<html lang="es">
 
-<h1>Resultados de Edad</h1>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados por Edad</title>
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.jpg">
+  <link rel="stylesheet" type="text/css" href="/assets/css/resultados.css">
+</head>
 
-<h2>Rango de Edad</h2>
-<p><%= rangoEdad %></p>
+<body>
 
-<h2>Usuarios en Rango de Edad</h2>
-<ul>
- <% usersInRange.forEach((user) => { %>
- <li><%= user.nombre %> - <%= user.edad %></li>
- <% }) %>
-</ul>
+  <header>
+    <img src="/assets/images/pulso.jpg" alt="Logo del juego" style="width: 100px;">
+  </header>
 
-<h2>Puntuaciones Medias</h2>
-<ul>
- <li>Juego 1 Derecho: <%= averageScores[0].avgScoreGame1d %></li>
- <li>Juego 1 Izquierdo: <%= averageScores[0].avgScoreGame1i %></li>
- <li>Juego 2 Derecho: <%= averageScores[0].avgScoreGame2d %></li>
- <li>Juego 2 Izquierdo: <%= averageScores[0].avgScoreGame2i %></li>
- <li>Juego 3 Derecho: <%= averageScores[0].avgScoreGame3d %></li>
- <li>Juego 3 Izquierdo: <%= averageScores[0].avgScoreGame3i %></li>
-</ul>
+  <div id="content">
+    <h1 class="orange-box">Resultados según su edad</h1>
+    <p>Estos son los resultados de su desempeño en los diferentes juegos que miden su habilidad con ambas manos, basándose en su rango de edad. Se le asigna el rango <%= rangoEdad %> al cuál también pertenecen <%= usersInRange.length %> usuarios que han disfrutado del juego y serán con los que se comparará sus datos</p>
 
-<h2>Ranking del Usuario Actual</h2>
-<ul>
- <li>Juego 1 Derecho: <% if (currentUserRankings) { %><%= currentUserRankings.rank1d %><% } %></li>
- <li>Juego 1 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank1i %><% } %></li>
- <li>Juego 2 Derecho: <% if (currentUserRankings) { %><%= currentUserRankings.rank2d %><% } %></li>
- <li>Juego 2 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank2i %><% } %></li>
- <li>Juego 3 Derecho: <% if (currentUserRankings) { %><%= currentUserRankings.rank3d %><% } %></li>
- <li>Juego 3 Izquierdo: <% if (currentUserRankings) { %><%= currentUserRankings.rank3i %><% } %></li>
-</ul>
+    <h2 class="orange-box">Velocidad (Derecha)</h2>
+    <% let playerScore1d = userScoreAboveAverage.score1dAboveAverage + averageScores[0].avgScoreGame1d; %>
+    <p>Puntuación: <%= playerScore1d %></p>
+    <p>Lugar en el ranking de velocidad con la mano derecha según su edad:</p>
+    <p><span class="ranking-number"><%= rankingUser1d.rank %></span></p>
+    <% if (playerScore1d > averageScores[0].avgScoreGame1d) { %>
+      <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore1d - averageScores[0].avgScoreGame1d) %> puntos por encima de la media.</p>
+    <% } else { %>
+      <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame1d - playerScore1d) %> puntos por debajo de la media.</p>
+    <% } %>
 
-<h2>Ranking del Usuario Actual</h2>
-<ul>
- <li>Juego 1 Derecho: <% sortedUsers %></li>
-</ul>
+    <h2 class="orange-box">Velocidad (Izquierda)</h2>
+    <% let playerScore1i = userScoreAboveAverage.score1iAboveAverage + averageScores[0].avgScoreGame1i; %>
+    <p>Puntuación: <%= playerScore1i %></p>
+    <p>Lugar en el ranking de velocidad con la mano izquierda según su edad:</p>
+    <p><span class="ranking-number"><%= rankingUser1i.rank %></span></p>
+    <% if (playerScore1i > averageScores[0].avgScoreGame1i) { %>
+      <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore1i - averageScores[0].avgScoreGame1i) %> puntos por encima de la media.</p>
+    <% } else { %>
+      <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame1i - playerScore1i) %> puntos por debajo de la media.</p>
+    <% } %>
 
-<h2>Puntuaciones Por Encima de la Media</h2>
-<ul>
- <% scoresAboveAverage.forEach((user) => { %>
-  <li>
-    Nombre: <%= user.nombre %> - Edad: <%= user.edad %>
-    <ul>
-      <li>Juego 1 Derecho: <%= user.score1dAboveAverage %></li>
-      <li>Juego 1 Izquierdo: <%= user.score1iAboveAverage %></li>
-      <li>Juego 2 Derecho: <%= user.score2dAboveAverage %></li>
-      <li>Juego 2 Izquierdo: <%= user.score2iAboveAverage %></li>
-      <li>Juego 3 Derecho: <%= user.score3dAboveAverage %></li>
-      <li>Juego 3 Izquierdo: <%= user.score3iAboveAverage %></li>
-    </ul>
-  </li>
- <% }) %>
-</ul>
+    <h2 class="orange-box">Reacción (Derecha)</h2>
+    <% let playerScore2d = userScoreAboveAverage.score2dAboveAverage + averageScores[0].avgScoreGame2d; %>
+    <p>Tiempo: <%= playerScore2d %> milisegundos</p>
+    <p>Lugar en el ranking de reacción con la mano derecha según su edad:</p>
+    <p><span class="ranking-number"><%= rankingUser2d.rank %></span></p>
+    <% if (playerScore2d < averageScores[0].avgScoreGame2d) { %>
+      <p class="highlight">¡Enhorabuena! Has tardado <%= Math.round(averageScores[0].avgScoreGame2d - playerScore2d) %> milisegundos menos que la media.</p>
+    <% } else { %>
+      <p class="highlight">Ánimo. Has tardado <%= Math.round(playerScore2d - averageScores[0].avgScoreGame2d) %> milisegundos más que la media.</p>
+    <% } %>
 
+    <h2 class="orange-box">Reacción (Izquierda)</h2>
+    <% let playerScore2i = userScoreAboveAverage.score2iAboveAverage + averageScores[0].avgScoreGame2i; %>
+    <p>Tiempo: <%= playerScore2i %> milisegundos</p>
+    <p>Lugar en el ranking de reacción con la mano izquierda según su edad:</p>
+    <p><span class="ranking-number"><%= rankingUser2i.rank %></span></p>
+    <% if (playerScore2i < averageScores[0].avgScoreGame2i) { %>
+      <p class="highlight">¡Enhorabuena! Has tardado <%= Math.round(averageScores[0].avgScoreGame2i - playerScore2i) %> milisegundos menos que la media.</p>
+    <% } else { %>
+      <p class="highlight">Ánimo. Has tardado <%= Math.round(playerScore2i - averageScores[0].avgScoreGame2i) %> milisegundos más que la media.</p>
+    <% } %>
 
+    <h2 class="orange-box">Coordinación (Derecha)</h2>
+    <% let playerScore3d = userScoreAboveAverage.score3dAboveAverage + averageScores[0].avgScoreGame3d; %>
+    <p>Puntuación: <%= playerScore3d %></p>
+    <p>Lugar en el ranking de coordinación con la mano derecha según su edad:</p>
+    <p><span class="ranking-number"><%= rankingUser3d.rank %></span></p>
+    <% if (playerScore3d > averageScores[0].avgScoreGame3d) { %>
+      <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore3d - averageScores[0].avgScoreGame3d) %> puntos por encima de la media.</p>
+    <% } else { %>
+      <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame3d - playerScore3d) %> puntos por debajo de la media.</p>
+    <% } %>
+
+    <h2 class="orange-box">Coordinación (Izquierda)</h2>
+    <% let playerScore3i = userScoreAboveAverage.score3iAboveAverage + averageScores[0].avgScoreGame3i; %>
+    <p>Puntuación: <%= playerScore3i %></p>
+    <p>Lugar en el ranking de coordinación con la mano izquierda según su edad:</p>
+    <p><span class="ranking-number"><%= rankingUser3i.rank %></span></p>
+    <% if (playerScore3i > averageScores[0].avgScoreGame3i) { %>
+      <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore3i - averageScores[0].avgScoreGame3i) %> puntos por encima de la media.</p>
+    <% } else { %>
+      <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame3i - playerScore3i) %> puntos por debajo de la media.</p>
+    <% } %>
+
+  <a href="/menu" class="orange-button">Volver al menú</a>
+
+  </div>
+
+  <footer>
+    <p>&copy; Zurdos vs Diestros</p>
+  </footer>
+
+</body>
+
+</html>

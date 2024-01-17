@@ -57,7 +57,16 @@ body {
  .notice p {
   font-style: italic;
  }
- 
+
+ .ranking-number {
+  font-weight: bold;
+  font-size: 1.5em;
+  background-color: #DCF2F1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  }
+
+
  .orange-button {
   position: relative;
   overflow: hidden;

@@ -490,8 +490,25 @@ server.get('/resultados-edad', async(req, res) => {
       score3iAboveAverage: user.scoregame3i - averageScores[0].avgScoreGame3i,
     }));
 
+    // Busca al usuario actual en scoresAboveAverage
+    const currentUserScores = scoresAboveAverage.find(user => user._id.equals(userId));
+
+    if (!currentUserScores) {
+      throw new Error('No se encontró al usuario actual');
+    }
+
+    // Extrae los puntajes por encima de la media del usuario actual
+    const userScoreAboveAverage = {
+      score1dAboveAverage: currentUserScores.score1dAboveAverage,
+      score1iAboveAverage: currentUserScores.score1iAboveAverage,
+      score2dAboveAverage: currentUserScores.score2dAboveAverage,
+      score2iAboveAverage: currentUserScores.score2iAboveAverage,
+      score3dAboveAverage: currentUserScores.score3dAboveAverage,
+      score3iAboveAverage: currentUserScores.score3iAboveAverage,
+    };
+
     // Función de comparación personalizada para manejar NaN
-    const compareNumbers = (a, b) => {
+    const compareNumbers1and3 = (a, b) => {
       if (isNaN(a) && isNaN(b)) {
         return 0;
       } else if (isNaN(a)) {
@@ -501,29 +518,157 @@ server.get('/resultados-edad', async(req, res) => {
       }
       return a - b;
     };
+
+    const compareNumbers2 = (a, b) => {
+      if (isNaN(a) && isNaN(b)) {
+        return 0;
+      } else if (isNaN(a)) {
+        return -1;
+      } else if (isNaN(b)) {
+        return 1;
+      }
+      return b - a;
+    };
     
     // Ordenar los usuarios por su puntuación en cada juego
-    const sortedUsers = scoresAboveAverage.sort((a, b) => {
-      return compareNumbers(b.score1dAboveAverage, a.score1dAboveAverage);
+    /*const sortedUsers1d = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers1and3(b.score1dAboveAverage, a.score1dAboveAverage);
+    });
+
+    const sortedUsers1i = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers1and3(b.score1iAboveAverage, a.score1iAboveAverage);
+    });
+
+    const sortedUsers2d = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers2(b.score2dAboveAverage, a.score2dAboveAverage);
+    });
+
+    const sortedUsers2i = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers2(b.score2iAboveAverage, a.score2iAboveAverage);
+    });
+
+    const sortedUsers3d = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers1and3(b.score3dAboveAverage, a.score3dAboveAverage);
+    });
+
+    const sortedUsers3i = scoresAboveAverage.sort((a, b) => {
+      return compareNumbers1and3(b.score3iAboveAverage, a.score3iAboveAverage);
     });
      
     
     // Asignar un rango a cada usuario
-    const rankedUsers = sortedUsers.map((user, index) => ({
+    const rankedUsers1d = sortedUsers1d.map((user, index) => ({
       ...user,
-      rank: index + 1,
+      rank1d: index + 1,
     }));
 
-    // Buscar el rango del usuario actual en cada juego
-    const currentRankingUser = rankedUsers.find((user) => {
-      console.log('user._id:', user._id);
-      console.log('userId:', userId);
-      return user._id.equals(userId) ;
-     });
+    console.log('rankedUsers1d', rankedUsers1d);
 
-    rankingUser = currentRankingUser.rank;
-     
-    res.render('resultados-edad', { rangoEdad, scoresAboveAverage, usersInRange, sortedUsers, averageScores, rankedUsers, currentUserRankings });
+    const rankedUsers1i = sortedUsers1i.map((user, index) => ({
+      ...user,
+      rank1i: index + 1,
+    }));
+
+    console.log('rankedUsers1i', rankedUsers1i);
+
+    const rankedUsers2d = sortedUsers2d.map((user, index) => ({
+      ...user,
+      rank2d: index + 1,
+    }));
+
+    const rankedUsers2i = sortedUsers2i.map((user, index) => ({
+      ...user,
+      rank2i: index + 1,
+    }));
+
+    const rankedUsers3d = sortedUsers3d.map((user, index) => ({
+      ...user,
+      rank3d: index + 1,
+    }));
+
+    const rankedUsers3i = sortedUsers3i.map((user, index) => ({
+      ...user,
+      rank3i: index + 1,
+    }));
+
+
+    // Buscar el rango del usuario actual en cada juego
+    const currentRankingUser1d = rankedUsers1d.find((user) => {
+      return user._id.equals(userId) ;
+    });
+
+    console.log('currentRankingUser1d', currentRankingUser1d);
+
+    const currentRankingUser1i = rankedUsers1i.find((user) => {
+      return user._id.equals(userId) ;
+    });
+
+    console.log('currentRankingUser1i', currentRankingUser1i);
+
+    const currentRankingUser2d = rankedUsers2d.find((user) => {
+      return user._id.equals(userId) ;
+    });
+
+    const currentRankingUser2i = rankedUsers2i.find((user) => {
+      return user._id.equals(userId) ;
+    });
+
+    const currentRankingUser3d = rankedUsers3d.find((user) => {
+      return user._id.equals(userId) ;
+    });
+
+    const currentRankingUser3i = rankedUsers3i.find((user) => {
+      return user._id.equals(userId) ;
+    });
+
+    rankingUser1d = currentRankingUser1d.rank1d;
+    rankingUser1i = currentRankingUser1i.rank1i;
+    rankingUser2d = currentRankingUser2d.rank2d;
+    rankingUser2i = currentRankingUser2i.rank2i;
+    rankingUser3d = currentRankingUser3d.rank3d;
+    rankingUser3i = currentRankingUser3i.rank3i;*/
+
+    //Nuevas funciones
+
+    // Función para clasificar usuarios por puntuación en un juego
+    function sortByScore(users, scoreKey, compareFunction) {
+      return users.sort((a, b) => compareFunction(b[scoreKey], a[scoreKey]));
+    }
+    
+    // Función para asignar rangos a usuarios en un juego
+    function assignRanks(users, scoreKey) {
+      return users.map((user, index) => ({
+        ...user,
+        rank: index + 1,
+      }));
+    }
+
+    // Clasificar usuarios por puntuación en cada juego
+    const sortedUsers1d = sortByScore(scoresAboveAverage, 'score1dAboveAverage', compareNumbers1and3);
+    const rankedUsers1d = assignRanks(sortedUsers1d, 'score1dAboveAverage');
+    const rankingUser1d = rankedUsers1d.find((user) => user._id.equals(userId));
+
+    const sortedUsers1i = sortByScore(scoresAboveAverage, 'score1iAboveAverage', compareNumbers1and3);
+    const rankedUsers1i = assignRanks(sortedUsers1i, 'score1iAboveAverage');
+    const rankingUser1i = rankedUsers1i.find((user) => user._id.equals(userId));
+
+    const sortedUsers2d = sortByScore(scoresAboveAverage, 'score2dAboveAverage', compareNumbers2);
+    const rankedUsers2d = assignRanks(sortedUsers2d, 'score2dAboveAverage');
+    const rankingUser2d = rankedUsers2d.find((user) => user._id.equals(userId));
+
+    const sortedUsers2i = sortByScore(scoresAboveAverage, 'score2iAboveAverage', compareNumbers2);
+    const rankedUsers2i = assignRanks(sortedUsers2i, 'score2iAboveAverage');
+    const rankingUser2i = rankedUsers2i.find((user) => user._id.equals(userId));
+
+    const sortedUsers3d = sortByScore(scoresAboveAverage, 'score3dAboveAverage', compareNumbers1and3);
+    const rankedUsers3d = assignRanks(sortedUsers3d, 'score3dAboveAverage');
+    const rankingUser3d = rankedUsers3d.find((user) => user._id.equals(userId));
+
+    const sortedUsers3i = sortByScore(scoresAboveAverage, 'score3iAboveAverage', compareNumbers1and3);
+    const rankedUsers3i = assignRanks(sortedUsers3i, 'score3iAboveAverage');
+    const rankingUser3i = rankedUsers3i.find((user) => user._id.equals(userId));
+
+    res.render('resultados-edad', { rangoEdad, userScoreAboveAverage, usersInRange, averageScores, rankingUser1d, rankingUser1i, rankingUser2d, rankingUser2i, rankingUser3d, rankingUser3i });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
