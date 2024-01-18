@@ -49,7 +49,10 @@ header, footer {
     margin-bottom: 1em;
 }
 
-
 .orange-button:hover {
     background-color: #00ADB5;
+}
+
+.tick-mark {
+    color: #DCFFB7;
 }

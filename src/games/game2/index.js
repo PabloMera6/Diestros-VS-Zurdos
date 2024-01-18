@@ -11,6 +11,11 @@ const config = {
   width: windowWidth,
   height: windowHeight,
   scene: [CountDown, Game, IntermediateScene, Final],
+  render: {
+    antialias: true,
+    pixelArt: false,
+    roundPixels: false,
+  },
   physics: {
     default: 'arcade',
     arcade: {

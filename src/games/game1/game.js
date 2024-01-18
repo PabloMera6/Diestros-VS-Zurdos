@@ -20,6 +20,7 @@ export class Game extends Phaser.Scene {
     this.load.image('background', 'assets/images/fondo-paisaje.jpg');
     this.load.image('globo-b', 'assets/images/globo-bueno.png');
     this.load.image('globo-m', 'assets/images/globo-malo.png');
+    this.load.image('marco', 'assets/images/marco.jpg');
   }
 
   create() {
@@ -31,18 +32,23 @@ export class Game extends Phaser.Scene {
     this.score = 0;
 
     this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height);
-    this.scoreText = this.add.text(10, 10, `Puntuación: ${this.score}`, {
+    this.scoreText = this.add.text(10, 15, `Puntuación: ${this.score}`, {
       fontSize: '32px',
-      fill: '#fff',
+      fill: '#000',
+      backgroundColor: '#DBE7C9',
       id: 'score'
     });
 
-    this.timeText = this.add.text(this.width - 50, 10, '', {
-      fontSize: '32px',
-      fill: '#fff',
-      id: 'time'
-    });
-    this.timeText.setOrigin(0.5, 0);
+    // Agregar el marco
+    this.add.image(this.width - 10, 10, 'marco').setOrigin(1, 0);
+
+    // Agregar el texto del tiempo centrado sobre el marco
+    this.timeText = this.add.text(this.width - 15, 15, '', {
+        fontSize: '32px',
+        fill: '#fff',
+        id: 'time'
+    }).setOrigin(1, 0);
+
 
     this.circle = this.add.sprite(this.width / 2, this.height / 2, 'globo-b');
     this.circle.setInteractive();
@@ -118,7 +124,6 @@ export class Game extends Phaser.Scene {
     let elapsedTime;
     elapsedTime = this.time.now - this.startTime;
     if (elapsedTime >= 20000) {
-      this.scoreText.setText(`Final Score: ${this.score}`);
       this.circle.disableInteractive();
       this.circle.setVisible(false);
       this.timeText.setText('');
@@ -145,7 +150,7 @@ export class Game extends Phaser.Scene {
           .then(data => {
             console.log(data.message);
           })
-          .catch(error => {
+      .catch(error => {
             console.error('Error al enviar la puntuación:', error);
           });
 

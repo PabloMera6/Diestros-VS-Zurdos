@@ -104,21 +104,45 @@ server.post("/form", async (request, response, next) => {
 
 server.get('/menu', async (req, res) => {
   let mostrar_resultados = false;
+  let juego1_done = false;
+  let juego2_done = false;
+  let juego3_done = false;
   const userId = new ObjectId(req.session.userId);
-  const userData = await collection.findOne({ 
+  const userDataGame1 = await collection.findOne({ 
     _id: userId, 
     scoregame1d: { $exists: true },
     scoregame1i: { $exists: true },
+  });
+
+  const userDataGame2 = await collection.findOne({
+    _id: userId,
     scoregame2d: { $exists: true },
     scoregame2i: { $exists: true },
+  });
+
+  const userDataGame3 = await collection.findOne({
+    _id: userId,
     scoregame3d: { $exists: true },
     scoregame3i: { $exists: true },
   });
 
-  if (userData) {
+  if (userDataGame1) {
+    juego1_done = true;
+  }
+
+  if (userDataGame2) {
+    juego2_done = true;
+  }
+
+  if (userDataGame3) {
+    juego3_done = true;
+  }
+  
+  if(juego1_done && juego2_done && juego3_done) {
     mostrar_resultados = true;
   }
-  res.render('menu', { mostrar_resultados });
+
+  res.render('menu', { mostrar_resultados, juego1_done, juego2_done, juego3_done});
 });
 
 server.get('/introduccion-1', (req, res) => {
@@ -231,8 +255,6 @@ server.post("/gamesave2-a", async (request, response, next) => {
   try {
     const userId = new ObjectId(request.session.userId);
     const { scoregame2d } = request.body;
-    console.log(scoregame2d);
-    console.log(userId);
     if (!userId || isNaN(scoregame2d)) {
       return response.status(400).json({ error: 'Parámetros incorrectos.' });
     }
@@ -327,8 +349,6 @@ server.post("/gamesave3-a", async (request, response, next) => {
   try {
     const userId = new ObjectId(request.session.userId);
     const { scoregame3d } = request.body;
-    console.log(scoregame3d);
-    console.log(userId);
     if (!userId || isNaN(scoregame3d)) {
       return response.status(400).json({ error: 'Parámetros incorrectos.' });
     }

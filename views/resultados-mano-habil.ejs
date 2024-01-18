@@ -43,7 +43,7 @@
 
     <h2 class="orange-box">Reacción (Derecha)</h2>
     <% let playerScore2d = userScoreAboveAverage.score2dAboveAverage + averageScores[0].avgScoreGame2d; %>
-    <p>Tiempo: <%= playerScore2d %> milisegundos</p>
+    <p>Tiempo: <%= Math.round(playerScore2d) %> milisegundos</p>
     <p>Lugar en el ranking de reacción con la mano derecha según su mano hábil:</p>
     <p><span class="ranking-number"><%= rankingUser2d.rank %></span></p>
     <% if (playerScore2d < averageScores[0].avgScoreGame2d) { %>
@@ -54,7 +54,7 @@
 
     <h2 class="orange-box">Reacción (Izquierda)</h2>
     <% let playerScore2i = userScoreAboveAverage.score2iAboveAverage + averageScores[0].avgScoreGame2i; %>
-    <p>Tiempo: <%= playerScore2i %> milisegundos</p>
+    <p>Tiempo: <%= Math.round(playerScore2i) %> milisegundos</p>
     <p>Lugar en el ranking de reacción con la mano izquierda según su mano hábil:</p>
     <p><span class="ranking-number"><%= rankingUser2i.rank %></span></p>
     <% if (playerScore2i < averageScores[0].avgScoreGame2i) { %>
@@ -65,7 +65,7 @@
 
     <h2 class="orange-box">Coordinación (Derecha)</h2>
     <% let playerScore3d = userScoreAboveAverage.score3dAboveAverage + averageScores[0].avgScoreGame3d; %>
-    <p>Puntuación: <%= playerScore3d %></p>
+    <p>Puntuación: <%= Math.round(playerScore3d) %></p>
     <p>Lugar en el ranking de coordinación con la mano derecha según su mano hábil:</p>
     <p><span class="ranking-number"><%= rankingUser3d.rank %></span></p>
     <% if (playerScore3d > averageScores[0].avgScoreGame3d) { %>
@@ -76,7 +76,7 @@
 
     <h2 class="orange-box">Coordinación (Izquierda)</h2>
     <% let playerScore3i = userScoreAboveAverage.score3iAboveAverage + averageScores[0].avgScoreGame3i; %>
-    <p>Puntuación: <%= playerScore3i %></p>
+    <p>Puntuación: <%= Math.round(playerScore3i) %></p>
     <p>Lugar en el ranking de coordinación con la mano izquierda según su mano hábil:</p>
     <p><span class="ranking-number"><%= rankingUser3i.rank %></span></p>
     <% if (playerScore3i > averageScores[0].avgScoreGame3i) { %>

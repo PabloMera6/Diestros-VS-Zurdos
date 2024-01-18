@@ -38,6 +38,7 @@ export class Game extends Phaser.Scene {
         this.load.image('tuberia', 'assets/images/tubo-35.png');
         this.load.image('tuberia-arriba', 'assets/images/tubo-arriba.png');
         this.load.image('tuberia-abajo', 'assets/images/tubo-abajo.png');
+        this.load.image('marco', 'assets/images/marco.jpg');
     }
 
     create() {
@@ -45,8 +46,6 @@ export class Game extends Phaser.Scene {
         this.screenController = new ScreenController(this);
         this.width = this.screenController.getWidth();
         this.height = this.screenController.getHeight();
-        //this.fondo = this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height);
-        //this.bg = this.add.tileSprite(0, 0, this.width, this.height, 'background').setOrigin(0, 0);
         this.background = this.add.tileSprite(0, 0, this.width, this.height, 'background').setOrigin(0, 0);
         const bounds = this.background.getBounds(); // Obtiene el ancho y el alto de la imagen
         this.background.setTileScale(this.height / bounds.height); // Escala la imagen de fondo según el alto de la pantalla
@@ -54,17 +53,15 @@ export class Game extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(50, 100, 'pajaro-arriba');
 
-        this.timeText = this.add.text(this.width - 50, 10, '', {
-          fontSize: '32px',
-          fill: '#fff',
-          stroke: '#000',
-          strokeThickness: 5,
-          fontStyle: 'bold',
-          backgroundColor: '#3652AD',
-          id: 'time'
-        });
-       
-        this.timeText.setOrigin(0.5, 0);
+        // Agregar el marco
+        this.add.image(this.width - 10, 10, 'marco').setOrigin(1, 0);
+
+        // Agregar el texto del tiempo centrado sobre el marco
+        this.timeText = this.add.text(this.width - 15, 15, '', {
+            fontSize: '32px',
+            fill: '#fff',
+            id: 'time'
+        }).setOrigin(1, 0);
 
         this.input.on('pointerdown', () => this.jump());
         this.newPipe();
@@ -139,12 +136,12 @@ export class Game extends Phaser.Scene {
             if (i !== hueco - 1 && i !== hueco + 1 && i !== hueco && i !== hueco - 2 && i !== hueco + 2) {
                 let bloque;
                 if(i == hueco - 3){
-                    bloque = tuberia.create(1000, i * 35, 'tuberia-abajo');
+                    bloque = tuberia.create(1200, i * 35, 'tuberia-abajo');
                 }else if(i == hueco + 3){
-                    bloque = tuberia.create(1000, i * 35, 'tuberia-arriba');
+                    bloque = tuberia.create(1200, i * 35, 'tuberia-arriba');
                 }
                 else{
-                    bloque = tuberia.create(1000, i * 35, 'tuberia');
+                    bloque = tuberia.create(1200, i * 35, 'tuberia');
                 }
                 bloque.body.allowGravity = false;
                 tuberia.setVelocityX(-250);

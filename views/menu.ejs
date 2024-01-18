@@ -17,19 +17,27 @@
       <div class="buttons">
         <a href="/introduccion-1" class="orange-button">
           Juego de Velocidad
+          <% if (juego1_done) { %>
+            <span class="tick-mark">&#10003;</span>
+          <% } %>
         </a>
         <a href="/introduccion-2" class="orange-button">
           Juego de Reacción
+          <% if (juego2_done) { %>
+            <span class="tick-mark">&#10003;</span>
+          <% } %>
         </a>
         <a href="/introduccion-3" class="orange-button">
           Juego de Coordinación
+          <% if (juego3_done) { %>
+            <span class="tick-mark">&#10003;</span>
+          <% } %>
         </a>
         <% if (mostrar_resultados) { %>
           <a href="/resultados-finales" class="orange-button">
             Ver resultados finales
           </a>
         <% } %>
-
       </div>
     </div>
   </div>

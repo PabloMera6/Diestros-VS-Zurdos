@@ -22,12 +22,12 @@ export class Final extends Phaser.Scene {
     this.screenController = new ScreenController(this);
     this.width = this.screenController.getWidth();
     this.height = this.screenController.getHeight();
-    this.add.tileSprite(0, 0, this.width, this.height, 'background').setOrigin(0, 0);
+    this.add.image(this.width / 2, this.height / 2, 'background').setOrigin(0.5, 0.5).setDisplaySize(this.width, this.height);
 
     const congratsTextStyle = {
       fontSize: '36px',
       fill: '#000',
-      backgroundColor: '#fff',
+      backgroundColor: '#DBE7C9',
       wordWrap: { width: this.width - 40 },
       align: 'center',
     };
@@ -39,7 +39,7 @@ export class Final extends Phaser.Scene {
     const instructionTextStyle = {
       fontSize: '24px',
       fill: '#000',
-      backgroundColor: '#fff',
+      backgroundColor: '#DBE7C9',
       wordWrap: { width: this.width - 40 },
       align: 'center',
     };

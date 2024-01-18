@@ -16,7 +16,7 @@ export class Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('background', 'assets/images/fondo-coche1.jpg');
+        this.load.image('background', 'assets/images/fondo-coche2.jpg');
         this.load.image('redLight', 'assets/images/semaforo.png');
     }
 
@@ -34,7 +34,7 @@ export class Game extends Phaser.Scene {
         this.attemptText = this.add.text(this.width / 2, 50, '', {
             fontSize: '24px',
             fill: '#000',
-            backgroundColor: '#fff',
+            backgroundColor: '#DBE7C9',
             wordWrap: { width: this.width - 20, useAdvancedWrap: true },
             align: 'center'
         }).setOrigin(0.5);
@@ -43,7 +43,7 @@ export class Game extends Phaser.Scene {
         this.reactionTimeText = this.add.text(this.width / 2, this.height / 4, '', {
             fontSize: '24px',
             fill: '#000',
-            backgroundColor: '#fff',
+            backgroundColor: '#DBE7C9',
             wordWrap: { width: this.width - 20, useAdvancedWrap: true },
             align: 'center'
         }).setOrigin(0.5);
@@ -128,7 +128,7 @@ export class Game extends Phaser.Scene {
         this.nextButton = this.add.text(this.width / 2, this.height / 2 - 50, 'Realizar siguiente intento', {
             fontSize: '24px',
             fill: '#000',
-            backgroundColor: '#fff',
+            backgroundColor: '#DBE7C9',
             wordWrap: { width: this.width - 20, useAdvancedWrap: true },
             align: 'center'
         }).setOrigin(0.5).setInteractive();
@@ -151,9 +151,9 @@ export class Game extends Phaser.Scene {
         this.reactionTimeText.setText(`Reacción en ${reactionTime} milisegundos`);
         this.input.off('pointerdown', this.handleReactionClick, this);
 
-        if (reactionTime < this.bestTime) {
+        if (parseFloat(reactionTime) < parseFloat(this.bestTime)) {
             this.bestTime = reactionTime;
-        }
+        }                  
 
         this.lightsGroup.clear(true, true);
         this.showIntermediateScreen();
@@ -192,7 +192,7 @@ export class Game extends Phaser.Scene {
         // Oculta el texto del intento actual
         this.attemptText.setVisible(false);
 
-        const finalScore = this.bestTime;
+        let finalScore = this.bestTime;
         let apiUrl = '/gamesave2-a';
         if (gameAttempts == 1) {
           apiUrl = '/gamesave2-b';
@@ -224,6 +224,7 @@ export class Game extends Phaser.Scene {
           this.scene.start('intermediate', { score1: finalScore });
         } else {
           this.scene.start('final', { score2: finalScore });
+          gameAttempts = 0;
         }
     }
 }
