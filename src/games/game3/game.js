@@ -123,12 +123,12 @@ export class Game extends Phaser.Scene {
           }
         }
         else{
-          if(this.intermediateStage) {
+          if(this.intermediateStage && !this.finalStage) {
             // Después de los primeros 10 segundos, el hueco puede estar en cualquier lugar
             // Pero no más de 4 huecos por encima o por debajo del hueco anterior
             // Ni en la zona más baja y más alta de la pantalla
             hueco = Phaser.Math.Between(Math.max(2, huecoAnterior - 4), Math.min(numTubes - 1, huecoAnterior + 4));
-          }else if(this.finalStage){
+          }else if(this.finalStage && this.intermediateStage){
             hueco = Math.floor(Math.random() * numTubes) + 1; 
           }
           
@@ -159,7 +159,6 @@ export class Game extends Phaser.Scene {
         this.time.delayedCall(10000, () => { this.intermediateStage = true; }, [], this);
 
         // Cambia a la tercera etapa después de 30 segundos
-        this.time.delayedCall(30000, () => { this.intermediateStage = false; }, [], this);
         this.time.delayedCall(30000, () => { this.finalStage = true; }, [], this);
 
         this.physics.add.overlap(this.player, tuberia, this.hitPipe, null, this);
