@@ -103,12 +103,17 @@ server.post("/form", async (request, response, next) => {
 });
 
 server.get('/menu', async (req, res) => {
+  let conectado = false;
   let mostrar_resultados = false;
   let juego1_done = false;
   let juego2_done = false;
   let juego3_done = false;
   let completedGamesCount = 0;
   const userId = new ObjectId(req.session.userId);
+  const userExist = await collection.findOne({ _id: userId });
+  if(userExist) {
+    conectado = true;
+  }
   const userDataGame1 = await collection.findOne({ 
     _id: userId, 
     scoregame1d: { $exists: true },
@@ -145,10 +150,8 @@ server.get('/menu', async (req, res) => {
   if(juego1_done && juego2_done && juego3_done) {
     mostrar_resultados = true;
   }
-
-  let overlayWidth = Math.floor((completedGamesCount / 3) * 100);
    
-  res.render('menu', { mostrar_resultados, juego1_done, juego2_done, juego3_done, completedGamesCount, overlayWidth });
+  res.render('menu', { conectado, mostrar_resultados, juego1_done, juego2_done, juego3_done, completedGamesCount });
  });
  
 

@@ -25,12 +25,20 @@ body {
  }
  
  .orange-box {
-  background-color: #00ADB5;
-  padding: 10px;
+  position: relative;
+  overflow: hidden;
+  padding: 15px;
+  font-size: 18px;
+  background: linear-gradient(to right, #00ADB5 0%, #AAD9BB 100%);
+  color: white;
+  border: none;
   border-radius: 5px;
-  font-weight: bold;
-  font-size: 1.5em;
-  margin-bottom: 2%;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  margin-bottom: 1em;
+  transition: background-position 0.3s, color 0.3s;
  }
  
  .highlight {
@@ -67,12 +75,12 @@ body {
   }
 
 
- .orange-button {
+  .orange-button {
   position: relative;
   overflow: hidden;
   padding: 15px;
   font-size: 18px;
-  background-color: #00ADB5;
+  background: linear-gradient(to right, #00ADB5 0%, #AAD9BB 100%);
   color: white;
   border: none;
   border-radius: 5px;
@@ -80,9 +88,9 @@ body {
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-  margin-top: 2%;
-  margin-bottom: 2%;
- }
+  margin-bottom: 1em;
+  transition: background-position 0.3s, color 0.3s;
+}
  
  .orange-button:hover {
   background-color: #00ADB5;

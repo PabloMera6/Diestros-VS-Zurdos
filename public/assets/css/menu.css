@@ -15,6 +15,12 @@ header, footer {
     color: #ffffff;
 }
 
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #content {
     flex-grow: 1;
     display: flex;
@@ -38,7 +44,7 @@ header, footer {
     overflow: hidden;
     padding: 15px;
     font-size: 18px;
-    background-color: #00ADB5;
+    background: linear-gradient(to right, #00ADB5 0%, #AAD9BB 100%);
     color: white;
     border: none;
     border-radius: 5px;
@@ -47,10 +53,7 @@ header, footer {
     box-sizing: border-box;
     text-align: center;
     margin-bottom: 1em;
-}
-
-.orange-button:hover {
-    background-color: #00ADB5;
+    transition: background-position 0.3s, color 0.3s;
 }
 
 .tick-mark {
@@ -62,7 +65,7 @@ header, footer {
     overflow: hidden;
     padding: 15px;
     font-size: 18px;
-    background-color: #00ADB5;
+    background: linear-gradient(to right, #00ADB5 0%, #AAD9BB 100%);
     color: white;
     border: none;
     border-radius: 5px;
@@ -71,16 +74,37 @@ header, footer {
     box-sizing: border-box;
     text-align: center;
     margin-bottom: 1em;
+    transition: background-position 0.3s, color 0.3s;
  }
- 
- #results-button[disabled] .lock-icon {
-    display: inline;
+
+ .menu-arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(135deg);
+   }
+
+   .btn-info{
+    position: absolute;
+    left: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2D3250;
+    border-color: #2D3250;
+    margin-left: 10px;
+    }
+
+    .btn-info:hover {
+    background-color: rgb(65, 65, 65);
+    border-color: rgb(54, 54, 54);
+    }
+
+ .lock-icon {
+    position: absolute;
+    left: 10px;
+    top: 55%;
+    transform: translateY(-50%);
  }
- 
- #results-button:not([disabled]) .lock-icon {
-    display: none;
- }
- 
- #progress-text {
-    margin-left: 0.5em;
- }
+  
