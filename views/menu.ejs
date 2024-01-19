@@ -18,19 +18,19 @@
     <div class="menu">
       <div class="buttons">
         <a href="/introduccion-1" class="orange-button">
-          Juego de Velocidad
+          <strong>Juego de Velocidad</strong>
           <% if (juego1_done) { %>
             <span class="tick-mark">&#10003;</span>
           <% } %>
         </a>
         <a href="/introduccion-2" class="orange-button">
-          Juego de Reacción
+          <strong>Juego de Reacción</strong>
           <% if (juego2_done) { %>
             <span class="tick-mark">&#10003;</span>
           <% } %>
         </a>
         <a href="/introduccion-3" class="orange-button">
-          Juego de Coordinación
+          <strong>Juego de Coordinación</strong>
           <% if (juego3_done) { %>
             <span class="tick-mark">&#10003;</span>
           <% } %>
@@ -44,7 +44,7 @@
         <% if (conectado) { %>
         <% if (mostrar_resultados) { %>
           <button id="results-button" onclick="location.href='/resultados-finales'">
-            <span id="progress-text">Resultados finales</span>
+            <span id="progress-text"><strong>Resultados Finales</strong></span>
           </button>
         <% } else { %>
           <button id="results-button">
@@ -54,7 +54,7 @@
                 <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/>
               </svg>
             </div>
-            <span id="progress-text"><%= completedGamesCount %>/3</span>
+            <span id="progress-text"><strong><%= completedGamesCount %>/3</strong></span>
           </button>
         <% } %>
         <% } %>
