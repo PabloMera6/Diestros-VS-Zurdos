@@ -65,27 +65,27 @@
 
     <h2 class="orange-box">Coordinación (Derecha)</h2>
     <% let playerScore3d = userScoreAboveAverage.score3dAboveAverage + averageScores[0].avgScoreGame3d; %>
-    <p>Puntuación: <%= Math.round(playerScore3d) %></p>
+    <p>Tiempo: <%= (playerScore3d/1000).toFixed(2) %> segundos</p>
     <p>Lugar en el ranking de coordinación con la mano derecha según la mano con la que usa el móvil:</p>
     <p><span class="ranking-number"><%= rankingUser3d.rank %></span></p>
     <% if (playerScore3d > averageScores[0].avgScoreGame3d) { %>
-      <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore3d - averageScores[0].avgScoreGame3d) %> puntos por encima de la media.</p>
-    <% } else { %>
-      <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame3d - playerScore3d) %> puntos por debajo de la media.</p>
+      <p class="highlight">¡Enhorabuena! Duras <%= ((playerScore3d - averageScores[0].avgScoreGame3d)/1000).toFixed(2) %> segundos más que la media.</p>
+      <% } else { %>
+      <p class="highlight">Ánimo. Duras <%= ((averageScores[0].avgScoreGame3d - playerScore3d) /1000).toFixed(2) %> menos que la media.</p>
     <% } %>
 
     <h2 class="orange-box">Coordinación (Izquierda)</h2>
     <% let playerScore3i = userScoreAboveAverage.score3iAboveAverage + averageScores[0].avgScoreGame3i; %>
-    <p>Puntuación: <%= Math.round(playerScore3i) %></p>
+    <p>Tiempo: <%= (playerScore3i/1000).toFixed(2) %> segundos</p>
     <p>Lugar en el ranking de coordinación con la mano izquierda según la mano con la que usa el móvil:</p>
     <p><span class="ranking-number"><%= rankingUser3i.rank %></span></p>
     <% if (playerScore3i > averageScores[0].avgScoreGame3i) { %>
-      <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore3i - averageScores[0].avgScoreGame3i) %> puntos por encima de la media.</p>
+      <p class="highlight">¡Enhorabuena! Duras <%= ((playerScore3i - averageScores[0].avgScoreGame3i)/1000).toFixed(2) %> segundos más que la media.</p>
     <% } else { %>
-      <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame3i - playerScore3i) %> puntos por debajo de la media.</p>
+      <p class="highlight">Ánimo. Duras <%= ((averageScores[0].avgScoreGame3i - playerScore3i)/1000).toFixed(2) %> segundos menos que la media.</p>
     <% } %>
 
-  <a href="/resultados-finales" class="orange-button">Volver a Resultados</a>
+    <a href="/resultados-finales" class="orange-button"><strong>Volver a Resultados</strong></a>
 
   </div>
 
