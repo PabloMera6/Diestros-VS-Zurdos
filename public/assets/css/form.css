@@ -15,6 +15,12 @@ header {
     color: #ffffff;
 }
 
+#error-message {
+    color: red;
+    padding: 0.6em;
+    margin-top: 0.6em;
+}
+
 #content {
     flex-grow: 1;
     display: flex;
@@ -28,7 +34,6 @@ footer {
     padding: 1em;
     color: #ffffff;
 }
-
 
 form {
     max-width: 80%;
@@ -51,6 +56,7 @@ input, select {
     width: 100%;
     box-sizing: border-box;
 }
+ 
 
 button {
     padding: 0.9375em;
@@ -76,5 +82,9 @@ button:hover {
 
     form {
         max-width: 100%;
+    }
+
+    input, select {
+        width: 100%;
     }
 }

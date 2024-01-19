@@ -56,3 +56,31 @@ header, footer {
 .tick-mark {
     color: #DCFFB7;
 }
+
+#results-button {
+    position: relative;
+    overflow: hidden;
+    padding: 15px;
+    font-size: 18px;
+    background-color: #00ADB5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 1em;
+ }
+ 
+ #results-button[disabled] .lock-icon {
+    display: inline;
+ }
+ 
+ #results-button:not([disabled]) .lock-icon {
+    display: none;
+ }
+ 
+ #progress-text {
+    margin-left: 0.5em;
+ }

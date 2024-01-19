@@ -33,11 +33,12 @@
             <span class="tick-mark">&#10003;</span>
           <% } %>
         </a>
-        <% if (mostrar_resultados) { %>
-          <a href="/resultados-finales" class="orange-button">
-            Ver resultados finales
-          </a>
-        <% } %>
+        <button id="results-button" onclick="location.href='/resultados-finales'" <%= completedGamesCount >= 3 ? '' : 'disabled' %>>
+          <span class="lock-icon">🔒</span>
+          <span id="progress-text"><%= completedGamesCount %>/3</span>
+        </button>
+         
+              
       </div>
     </div>
   </div>

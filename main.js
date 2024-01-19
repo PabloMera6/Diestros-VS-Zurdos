@@ -65,8 +65,8 @@ server.get('/form', (req, res) => {
 
 // Middleware para validar el formulario
 const validateFormMiddleware = (data) => {
-  if (data.nombre.length < 5 || data.nombre.length > 15) {
-    throw new Error('El nombre debe tener entre 5 y 15 caracteres.');
+  if (data.nombre.length < 3 || data.nombre.length > 15) {
+    throw new Error('El nombre debe tener entre 3 y 15 caracteres.');
   }
 
   if (isNaN(data.edad) || data.edad < 3 || data.edad > 99) {
@@ -107,43 +107,50 @@ server.get('/menu', async (req, res) => {
   let juego1_done = false;
   let juego2_done = false;
   let juego3_done = false;
+  let completedGamesCount = 0;
   const userId = new ObjectId(req.session.userId);
   const userDataGame1 = await collection.findOne({ 
     _id: userId, 
     scoregame1d: { $exists: true },
     scoregame1i: { $exists: true },
   });
-
+ 
   const userDataGame2 = await collection.findOne({
     _id: userId,
     scoregame2d: { $exists: true },
     scoregame2i: { $exists: true },
   });
-
+ 
   const userDataGame3 = await collection.findOne({
     _id: userId,
     scoregame3d: { $exists: true },
     scoregame3i: { $exists: true },
   });
-
+ 
   if (userDataGame1) {
     juego1_done = true;
+    completedGamesCount++;
   }
-
+ 
   if (userDataGame2) {
     juego2_done = true;
+    completedGamesCount++;
   }
-
+ 
   if (userDataGame3) {
     juego3_done = true;
+    completedGamesCount++;
   }
   
   if(juego1_done && juego2_done && juego3_done) {
     mostrar_resultados = true;
   }
 
-  res.render('menu', { mostrar_resultados, juego1_done, juego2_done, juego3_done});
-});
+  let overlayWidth = Math.floor((completedGamesCount / 3) * 100);
+   
+  res.render('menu', { mostrar_resultados, juego1_done, juego2_done, juego3_done, completedGamesCount, overlayWidth });
+ });
+ 
 
 server.get('/introduccion-1', (req, res) => {
   const indexPath = path.join(__dirname, 'src/games/game1/introduccion.html');

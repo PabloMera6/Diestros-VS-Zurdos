@@ -10,8 +10,8 @@ document.getElementById('user-data-form').addEventListener('submit', function (e
 
   // Validar longitud del nombre
   const nombreValue = nombreInput.value.trim();
-  if (nombreValue.length < 5 || nombreValue.length > 15) {
-    showError('El nombre debe tener entre 5 y 15 caracteres.');
+  if (nombreValue.length < 3 || nombreValue.length > 15) {
+    showError('El nombre debe tener entre 3 y 15 caracteres.');
     return;
   }
 
