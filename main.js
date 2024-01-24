@@ -49,7 +49,7 @@ setupDatabase("Usuario").then(() => {
   });
 });
 
-module.exports = {server, setupDatabase, client};
+module.exports = {server, setupDatabase, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3};
 
 
 server.get('/', (req, res) => {
@@ -218,6 +218,27 @@ server.post("/gamesave1-b", async (request, response, next) => {
   }
 });
 
+async function calculateResultsGame1(userId) {
+  const userData = await collection.findOne({ _id: userId });
+  if (!userData) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  const averageData = await collection.aggregate([
+    {
+      $group: {
+        _id: null,
+        mediagame1d: { $avg: '$scoregame1d' },
+        mediagame1i: { $avg: '$scoregame1i' },
+      },
+    },
+  ]).toArray();
+  const porcentajeRespectoMediaDerecha = ((userData.scoregame1d - averageData[0].mediagame1d) / averageData[0].mediagame1d) * 100;
+  const porcentajeRespectoMediaIzquierda = ((userData.scoregame1i - averageData[0].mediagame1i) / averageData[0].mediagame1i) * 100;
+
+  return { datosUsuario1: userData.scoregame1d, datosUsuario2: userData.scoregame1i, datosMedia1: porcentajeRespectoMediaDerecha, datosMedia2: porcentajeRespectoMediaIzquierda };
+}
+
 server.get('/resultados1', async (req, res) => {
   try {
     const userId = new ObjectId(req.session.userId);
@@ -226,25 +247,9 @@ server.get('/resultados1', async (req, res) => {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
     }
 
-    const userData = await collection.findOne({ _id: userId });
+    const datos = await calculateResultsGame1(userId);
 
-    if (!userData) {
-      return res.status(404).json({ error: 'Usuario no encontrado.' });
-    }
-
-    const averageData = await collection.aggregate([
-      {
-        $group: {
-          _id: null,
-          mediagame1d: { $avg: '$scoregame1d' },
-          mediagame1i: { $avg: '$scoregame1i' },
-        },
-      },
-    ]).toArray();
-    const porcentajeRespectoMediaDerecha = ((userData.scoregame1d - averageData[0].mediagame1d) / averageData[0].mediagame1d) * 100;
-    const porcentajeRespectoMediaIzquierda = ((userData.scoregame1i - averageData[0].mediagame1i) / averageData[0].mediagame1i) * 100;
-
-    res.render('resultados', { datosUsuario1: userData.scoregame1d, datosUsuario2: userData.scoregame1i, datosMedia1: porcentajeRespectoMediaDerecha, datosMedia2: porcentajeRespectoMediaIzquierda });
+    res.render('resultados', { datosUsuario1: datos.datosUsuario1, datosUsuario2: datos.datosUsuario2, datosMedia1: datos.datosMedia1, datosMedia2: datos.datosMedia2 });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
@@ -312,6 +317,27 @@ server.post("/gamesave2-b", async (request, response, next) => {
   }
 });
 
+async function calculateResultsGame2(userId) {
+  const userData = await collection.findOne({ _id: userId });
+  if (!userData) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  const averageData = await collection.aggregate([
+    {
+      $group: {
+        _id: null,
+        mediagame2d: { $avg: '$scoregame2d' },
+        mediagame2i: { $avg: '$scoregame2i' },
+      },
+    },
+  ]).toArray();
+  const porcentajeRespectoMediaDerecha = ((userData.scoregame2d - averageData[0].mediagame2d) / averageData[0].mediagame2d) * 100;
+  const porcentajeRespectoMediaIzquierda = ((userData.scoregame2i - averageData[0].mediagame2i) / averageData[0].mediagame2i) * 100;
+
+  return { datosUsuario1: userData.scoregame2d, datosUsuario2: userData.scoregame2i, datosMedia2d: porcentajeRespectoMediaDerecha, datosMedia2i: porcentajeRespectoMediaIzquierda };
+}
+
 server.get('/resultados2', async (req, res) => {
   try {
     const userId = new ObjectId(req.session.userId);
@@ -320,25 +346,9 @@ server.get('/resultados2', async (req, res) => {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
     }
 
-    const userData = await collection.findOne({ _id: userId });
+    const datos = await calculateResultsGame2(userId);
 
-    if (!userData) {
-      return res.status(404).json({ error: 'Usuario no encontrado.' });
-    }
-
-    const averageData = await collection.aggregate([
-      {
-        $group: {
-          _id: null,
-          mediagame2d: { $avg: '$scoregame2d' },
-          mediagame2i: { $avg: '$scoregame2i' },
-        },
-      },
-    ]).toArray();
-    const porcentajeRespectoMediaDerecha = ((userData.scoregame2d - averageData[0].mediagame2d) / averageData[0].mediagame2d) * 100;
-    const porcentajeRespectoMediaIzquierda = ((userData.scoregame2i - averageData[0].mediagame2i) / averageData[0].mediagame2i) * 100;
-
-    res.render('resultados2', { datosUsuario2d: userData.scoregame2d, datosUsuario2i: userData.scoregame2i, datosMedia2d: porcentajeRespectoMediaDerecha, datosMedia2i: porcentajeRespectoMediaIzquierda });
+    res.render('resultados2', { datosUsuario2d: datos.datosUsuario1, datosUsuario2i: datos.datosUsuario2, datosMedia2d: datos.datosMedia2d, datosMedia2i: datos.datosMedia2i });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
@@ -406,6 +416,27 @@ server.post("/gamesave3-b", async (request, response, next) => {
   }
 });
 
+async function calculateResultsGame3(userId) {
+  const userData = await collection.findOne({ _id: userId });
+  if (!userData) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  const averageData = await collection.aggregate([
+    {
+      $group: {
+        _id: null,
+        mediagame3d: { $avg: '$scoregame3d' },
+        mediagame3i: { $avg: '$scoregame3i' },
+      },
+    },
+  ]).toArray();
+  const porcentajeRespectoMediaDerecha = ((userData.scoregame3d - averageData[0].mediagame3d) / averageData[0].mediagame3d) * 100;
+  const porcentajeRespectoMediaIzquierda = ((userData.scoregame3i - averageData[0].mediagame3i) / averageData[0].mediagame3i) * 100;
+
+  return { datosUsuario1: userData.scoregame3d, datosUsuario2: userData.scoregame3i, datosMedia3d: porcentajeRespectoMediaDerecha, datosMedia3i: porcentajeRespectoMediaIzquierda };
+}
+
 server.get('/resultados3', async (req, res) => {
   try {
     const userId = new ObjectId(req.session.userId);
@@ -414,25 +445,9 @@ server.get('/resultados3', async (req, res) => {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
     }
 
-    const userData = await collection.findOne({ _id: userId });
+    const datos = await calculateResultsGame3(userId);
 
-    if (!userData) {
-      return res.status(404).json({ error: 'Usuario no encontrado.' });
-    }
-
-    const averageData = await collection.aggregate([
-      {
-        $group: {
-          _id: null,
-          mediagame3d: { $avg: '$scoregame3d' },
-          mediagame3i: { $avg: '$scoregame3i' },
-        },
-      },
-    ]).toArray();
-    const porcentajeRespectoMediaDerecha = ((userData.scoregame3d - averageData[0].mediagame3d) / averageData[0].mediagame3d) * 100;
-    const porcentajeRespectoMediaIzquierda = ((userData.scoregame3i - averageData[0].mediagame3i) / averageData[0].mediagame3i) * 100;
-
-    res.render('resultados3', { datosUsuario3d: userData.scoregame3d, datosUsuario3i: userData.scoregame3i, datosMedia3d: porcentajeRespectoMediaDerecha, datosMedia3i: porcentajeRespectoMediaIzquierda });
+    res.render('resultados3', { datosUsuario3d: datos.datosUsuario1, datosUsuario3i: datos.datosUsuario2, datosMedia3d: datos.datosMedia3d, datosMedia3i: datos.datosMedia3i });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
