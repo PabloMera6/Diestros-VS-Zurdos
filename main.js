@@ -6,7 +6,6 @@ const BodyParser = require("body-parser");
 const Cors = require("cors");
 const path = require('path');
 
-
 const server = express();
 server.use(express.static('public'));
 server.use('/src/games/form', express.static(path.join(__dirname + '/src/games/form')));
@@ -34,23 +33,24 @@ const client = new MongoClient('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mo
 
 var collection;
 
-// Función para establecer la conexión y crear el índice único
-async function setupDatabase() {
+async function setupDatabase(collectionName) {
   try {
     await client.connect();
-    collection = client.db("Juego").collection("Usuario");
-
+    collection = client.db("Juego").collection(collectionName);
   } catch (e) {
     console.error("Error al conectar y configurar la base de datos", e);
   }
 }
 
 // Llamar a la función de configuración de la base de datos al iniciar el servidor
-setupDatabase();
-
-server.listen("3000", () => {
-  console.log("Listening at :3000...");
+setupDatabase("Usuario").then(() => {
+  server.listen("3000", () => {
+    console.log("Listening at :3000...");
+  });
 });
+
+module.exports = {server, setupDatabase, client};
+
 
 server.get('/', (req, res) => {
   const indexPath = path.join(__dirname, 'public/index.html');
@@ -89,7 +89,7 @@ server.post("/form", async (request, response, next) => {
     request.session.userId = userId;
 
     // Redirigir al usuario a la URL /menu después del registro exitoso
-    response.status(200).json({ redirect: '/menu' });
+    response.status(200).json({ redirect: '/menu' , userId: userId});
   } catch (error) {
     console.error(error);
 
