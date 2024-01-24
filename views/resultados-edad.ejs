@@ -26,8 +26,10 @@
     <p><span class="ranking-number"><%= rankingUser1d.rank %></span></p>
     <% if (playerScore1d > averageScores[0].avgScoreGame1d) { %>
       <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore1d - averageScores[0].avgScoreGame1d) %> puntos por encima de la media.</p>
-    <% } else { %>
+    <% } else if(playerScore1d < averageScores[0].avgScoreGame1d){ %>
       <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame1d - playerScore1d) %> puntos por debajo de la media.</p>
+    <% } else { %>
+      <p class="highlight">¡Estás en la media!</p>
     <% } %>
 
     <h2 class="orange-box">Velocidad (Izquierda)</h2>
@@ -37,8 +39,10 @@
     <p><span class="ranking-number"><%= rankingUser1i.rank %></span></p>
     <% if (playerScore1i > averageScores[0].avgScoreGame1i) { %>
       <p class="highlight">¡Enhorabuena! Estás <%= Math.round(playerScore1i - averageScores[0].avgScoreGame1i) %> puntos por encima de la media.</p>
-    <% } else { %>
+    <% } else if (playerScore1i < averageScores[0].avgScoreGame1i) { %>
       <p class="highlight">Ánimo. Estás <%= Math.round(averageScores[0].avgScoreGame1i - playerScore1i) %> puntos por debajo de la media.</p>
+    <% } else { %>
+      <p class="highlight">¡Estás en la media!</p>
     <% } %>
 
     <h2 class="orange-box">Reacción (Derecha)</h2>
@@ -48,8 +52,10 @@
     <p><span class="ranking-number"><%= rankingUser2d.rank %></span></p>
     <% if (playerScore2d < averageScores[0].avgScoreGame2d) { %>
       <p class="highlight">¡Enhorabuena! Has tardado <%= Math.round(averageScores[0].avgScoreGame2d - playerScore2d) %> milisegundos menos que la media.</p>
-    <% } else { %>
+    <% } else if (playerScore2d > averageScores[0].avgScoreGame2d){ %>
       <p class="highlight">Ánimo. Has tardado <%= Math.round(playerScore2d - averageScores[0].avgScoreGame2d) %> milisegundos más que la media.</p>
+    <% } else { %>
+      <p class="highlight">¡Estás en la media!</p>
     <% } %>
 
     <h2 class="orange-box">Reacción (Izquierda)</h2>
@@ -59,8 +65,10 @@
     <p><span class="ranking-number"><%= rankingUser2i.rank %></span></p>
     <% if (playerScore2i < averageScores[0].avgScoreGame2i) { %>
       <p class="highlight">¡Enhorabuena! Has tardado <%= Math.round(averageScores[0].avgScoreGame2i - playerScore2i) %> milisegundos menos que la media.</p>
-    <% } else { %>
+    <% } else if (playerScore2i > averageScores[0].avgScoreGame2i) { %>
       <p class="highlight">Ánimo. Has tardado <%= Math.round(playerScore2i - averageScores[0].avgScoreGame2i) %> milisegundos más que la media.</p>
+    <% } else { %>
+      <p class="highlight">¡Estás en la media!</p>
     <% } %>
 
     <h2 class="orange-box">Coordinación (Derecha)</h2>
@@ -70,8 +78,10 @@
     <p><span class="ranking-number"><%= rankingUser3d.rank %></span></p>
     <% if (playerScore3d > averageScores[0].avgScoreGame3d) { %>
       <p class="highlight">¡Enhorabuena! Duras <%= ((playerScore3d - averageScores[0].avgScoreGame3d)/1000).toFixed(2) %> segundos más que la media.</p>
-      <% } else { %>
+    <% } else if (playerScore3d < averageScores[0].avgScoreGame3d){ %>
       <p class="highlight">Ánimo. Duras <%= ((averageScores[0].avgScoreGame3d - playerScore3d) /1000).toFixed(2) %> menos que la media.</p>
+    <% } else { %>
+      <p class="highlight">¡Estás en la media!</p>
     <% } %>
 
     <h2 class="orange-box">Coordinación (Izquierda)</h2>
@@ -81,8 +91,10 @@
     <p><span class="ranking-number"><%= rankingUser3i.rank %></span></p>
     <% if (playerScore3i > averageScores[0].avgScoreGame3i) { %>
       <p class="highlight">¡Enhorabuena! Duras <%= ((playerScore3i - averageScores[0].avgScoreGame3i)/1000).toFixed(2) %> segundos más que la media.</p>
-    <% } else { %>
+    <% } else if(playerScore3i < averageScores[0].avgScoreGame3i) { %>
       <p class="highlight">Ánimo. Duras <%= ((averageScores[0].avgScoreGame3i - playerScore3i)/1000).toFixed(2) %> segundos menos que la media.</p>
+    <% } else { %>
+      <p class="highlight">¡Estás en la media!</p>
     <% } %>
 
   <a href="/resultados-finales" class="orange-button"><strong>Volver a Resultados</strong></a>

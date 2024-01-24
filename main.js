@@ -459,6 +459,42 @@ server.get('/resultados-finales', (req, res) => {
   res.sendFile(indexPath);
 });
 
+// Función de comparación personalizada para manejar NaN
+const compareNumbers1and3 = (a, b) => {
+  if (isNaN(a) && isNaN(b)) {
+    return 0;
+  } else if (isNaN(a)) {
+    return -1;
+  } else if (isNaN(b)) {
+    return 1;
+  }
+  return a - b;
+};
+
+const compareNumbers2 = (a, b) => {
+  if (isNaN(a) && isNaN(b)) {
+    return 0;
+  } else if (isNaN(a)) {
+    return -1;
+  } else if (isNaN(b)) {
+    return 1;
+  }
+  return b - a;
+};
+
+// Función para clasificar usuarios por puntuación en un juego
+function sortByScore(users, scoreKey, compareFunction) {
+  return users.sort((a, b) => compareFunction(b[scoreKey], a[scoreKey]));
+}
+
+// Función para asignar rangos a usuarios en un juego
+function assignRanks(users, scoreKey) {
+  return users.map((user, index) => ({
+    ...user,
+    rank: index + 1,
+  }));
+}
+
 server.get('/resultados-edad', async(req, res) => {
   try {
     const userId = new ObjectId(req.session.userId);
@@ -551,42 +587,6 @@ server.get('/resultados-edad', async(req, res) => {
       score3dAboveAverage: currentUserScores.score3dAboveAverage,
       score3iAboveAverage: currentUserScores.score3iAboveAverage,
     };
-
-    // Función de comparación personalizada para manejar NaN
-    const compareNumbers1and3 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return a - b;
-    };
-
-    const compareNumbers2 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return b - a;
-    };
-
-    // Función para clasificar usuarios por puntuación en un juego
-    function sortByScore(users, scoreKey, compareFunction) {
-      return users.sort((a, b) => compareFunction(b[scoreKey], a[scoreKey]));
-    }
-    
-    // Función para asignar rangos a usuarios en un juego
-    function assignRanks(users, scoreKey) {
-      return users.map((user, index) => ({
-        ...user,
-        rank: index + 1,
-      }));
-    }
 
     // Clasificar usuarios por puntuación en cada juego
     const sortedUsers1d = sortByScore(scoresAboveAverage, 'score1dAboveAverage', compareNumbers1and3);
@@ -685,42 +685,6 @@ server.get('/resultados-mano-habil', async(req, res) => {
       score3iAboveAverage: currentUserScores.score3iAboveAverage,
     };
 
-    // Función de comparación personalizada para manejar NaN
-    const compareNumbers1and3 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return a - b;
-    };
-
-    const compareNumbers2 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return b - a;
-    };
-
-    // Función para clasificar usuarios por puntuación en un juego
-    function sortByScore(users, scoreKey, compareFunction) {
-      return users.sort((a, b) => compareFunction(b[scoreKey], a[scoreKey]));
-    }
-    
-    // Función para asignar rangos a usuarios en un juego
-    function assignRanks(users, scoreKey) {
-      return users.map((user, index) => ({
-        ...user,
-        rank: index + 1,
-      }));
-    }
-
     // Clasificar usuarios por puntuación en cada juego
     const sortedUsers1d = sortByScore(scoresAboveAverage, 'score1dAboveAverage', compareNumbers1and3);
     const rankedUsers1d = assignRanks(sortedUsers1d, 'score1dAboveAverage');
@@ -817,42 +781,6 @@ server.get('/resultados-mano-uso', async(req, res) => {
       score3dAboveAverage: currentUserScores.score3dAboveAverage,
       score3iAboveAverage: currentUserScores.score3iAboveAverage,
     };
-
-    // Función de comparación personalizada para manejar NaN
-    const compareNumbers1and3 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return a - b;
-    };
-
-    const compareNumbers2 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return b - a;
-    };
-
-    // Función para clasificar usuarios por puntuación en un juego
-    function sortByScore(users, scoreKey, compareFunction) {
-      return users.sort((a, b) => compareFunction(b[scoreKey], a[scoreKey]));
-    }
-    
-    // Función para asignar rangos a usuarios en un juego
-    function assignRanks(users, scoreKey) {
-      return users.map((user, index) => ({
-        ...user,
-        rank: index + 1,
-      }));
-    }
 
     // Clasificar usuarios por puntuación en cada juego
     const sortedUsers1d = sortByScore(scoresAboveAverage, 'score1dAboveAverage', compareNumbers1and3);
@@ -972,42 +900,6 @@ server.get('/resultados-horas-uso', async(req, res) => {
       score3dAboveAverage: currentUserScores.score3dAboveAverage,
       score3iAboveAverage: currentUserScores.score3iAboveAverage,
     };
-
-    // Función de comparación personalizada para manejar NaN
-    const compareNumbers1and3 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return a - b;
-    };
-
-    const compareNumbers2 = (a, b) => {
-      if (isNaN(a) && isNaN(b)) {
-        return 0;
-      } else if (isNaN(a)) {
-        return -1;
-      } else if (isNaN(b)) {
-        return 1;
-      }
-      return b - a;
-    };
-
-    // Función para clasificar usuarios por puntuación en un juego
-    function sortByScore(users, scoreKey, compareFunction) {
-      return users.sort((a, b) => compareFunction(b[scoreKey], a[scoreKey]));
-    }
-    
-    // Función para asignar rangos a usuarios en un juego
-    function assignRanks(users, scoreKey) {
-      return users.map((user, index) => ({
-        ...user,
-        rank: index + 1,
-      }));
-    }
 
     // Clasificar usuarios por puntuación en cada juego
     const sortedUsers1d = sortByScore(scoresAboveAverage, 'score1dAboveAverage', compareNumbers1and3);
