@@ -1,20 +1,30 @@
 const request = require('supertest');
 const session = require('supertest-session');
 const {server, setupDatabase, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3}= require('../main.js');
-const { ObjectId } = require("mongodb");
+const cheerio = require('cheerio');
+const { MongoClient, ObjectId } = require('mongodb');
+const uri = 'mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/';
 
 
 describe('Pruebas para el servidor', () => {
   let testSession = null;
   let savedUserId;
+  let client;
+  let collection;
 
   beforeAll(async () => {
     testSession = session(server);
+    client = new MongoClient(uri);
+    await client.connect();
     await setupDatabase('UsuarioTest');
+    collection = client.db("Juego").collection('UsuarioTest');
   });
 
   afterAll(async () => {
+    await collection.deleteMany({}); // Eliminar todos los documentos de la colección al finalizar las pruebas
+    await client.close();
   });
+   
 
   it('debería responder correctamente a la ruta /', async () => {
     const response = await request(server).get('/');
@@ -180,4 +190,25 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosMedia3i).toBe(0);
   });
 
+  it('debería responder correctamente a la ruta /resultados-edad', async () => {
+    const response = await testSession.get('/resultados-edad');
+    expect(response.status).toBe(200);
+    const $ = cheerio.load(response.text);
+
+    expect($('title').text()).toBe('Resultados por Edad');
+    expect($('h2.orange-box')).toHaveLength(6);
+    expect($('.ranking-number')).toHaveLength(6);
+    expect($('.highlight')).toHaveLength(6);  
+    // Verifica que los textos de reacción y coordinación estén presentes
+    const texts = ['Velocidad (Derecha)', 'Velocidad (Izquierda)','Reacción (Derecha)', 'Reacción (Izquierda)', 'Coordinación (Derecha)', 'Coordinación (Izquierda)'];
+    texts.forEach((text) => {
+      expect($('body').text()).toContain(text);
+    });
+
+    // Verifica que los rankings sean correctos
+    const expectedRanking = '1';
+    $('.ranking-number').each((i, elem) => {
+      expect($(elem).text()).toBe(expectedRanking);
+    });
+  });
 });

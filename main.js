@@ -31,7 +31,7 @@ const client = new MongoClient('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mo
   useUnifiedTopology: true,
 });
 
-var collection;
+let collection;
 
 async function setupDatabase(collectionName) {
   try {
@@ -49,7 +49,7 @@ setupDatabase("Usuario").then(() => {
   });
 });
 
-module.exports = {server, setupDatabase, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3};
+module.exports = {server, setupDatabase, collection, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3};
 
 
 server.get('/', (req, res) => {

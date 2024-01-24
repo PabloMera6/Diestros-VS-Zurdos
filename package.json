@@ -13,12 +13,13 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --forceExit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "supertest-session": "^5.0.1"
   }
 }
