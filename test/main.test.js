@@ -24,58 +24,107 @@ describe('Pruebas para el servidor', () => {
     await collection.deleteMany({}); // Eliminar todos los documentos de la colección al finalizar las pruebas
     await client.close();
   });
-   
+  
 
   it('debería responder correctamente a la ruta /', async () => {
     const response = await request(server).get('/');
     expect(response.status).toBe(200);
+    expect(response.type).toBe('text/html');
   });
 
-  it('debería responder correctamente a la ruta /form', async () => {
-    const response = await request(server).get('/form');
-    expect(response.status).toBe(200);
-  });
+  describe('Pruebas para el formulario', () => {
+    it('debería responder correctamente a la ruta /form', async () => {
+      const response = await request(server).get('/form');
+      expect(response.status).toBe(200);
+    });
 
-  it('debería manejar correctamente el formulario', async () => {
-    const data = {
-      nombre: 'Test',
-      edad: 25,
-      manoHabil: 'derecha',
-      manoUso: 'derecha',
-      horasUsoMovil: '1-3',
-    };
+    it('debería manejar correctamente el formulario', async () => {
+      const data = {
+        nombre: 'Test',
+        edad: 25,
+        manoHabil: 'derecha',
+        manoUso: 'derecha',
+        horasUsoMovil: '1-3',
+      };
+    
+      const response = await testSession.post('/form').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ redirect: '/menu' , userId: expect.anything()});
+      savedUserId = response.body.userId;
+    });
+
+    it('debería manejar error por nombre en el formulario', async () => {
+      const data = {
+        nombre: 'Te',
+        edad: 33,
+        manoHabil: 'derecha',
+        manoUso: 'derecha',
+        horasUsoMovil: '1-3',
+      };
+
+      const response = await request(server).post('/form').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'El nombre debe tener entre 3 y 15 caracteres.' });
+    });
+
+    it('debería manejar error por edad en el formulario', async () => {
+      const data = {
+        nombre: 'Ana',
+        edad: 2,
+        manoHabil: 'derecha',
+        manoUso: 'derecha',
+        horasUsoMovil: '1-3',
+      };
+
+      const response = await request(server).post('/form').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'La edad debe estar entre 3 y 99 años.' });
+
+    });
+
+    it('debería manejar error por mano hábil en el formulario', async () => {
+      const data = {
+        nombre: 'Ana',
+        edad: 33,
+        manoHabil: '',
+        manoUso: 'derecha',
+        horasUsoMovil: '1-3',
+      };
+    
+      const response = await request(server).post('/form').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'La mano hábil debe ser derecha o izquierda.' });
+    });
+    
+    it('debería manejar error por mano de uso en el formulario', async () => {
+      const data = {
+        nombre: 'Ana',
+        edad: 33,
+        manoHabil: 'derecha',
+        manoUso: '',
+        horasUsoMovil: '1-3',
+      };
+    
+      const response = await request(server).post('/form').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'La mano de uso debe ser derecha o izquierda.' });
+    });
+    
+    it('debería manejar error por horas de uso del móvil en el formulario', async () => {
+      const data = {
+        nombre: 'Ana',
+        edad: 33,
+        manoHabil: 'derecha',
+        manoUso: 'derecha',
+        horasUsoMovil: '',
+      };
+    
+      const response = await request(server).post('/form').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Las horas de uso del móvil deben ser las especificadas.' });
+    });
+  });
   
-    const response = await testSession.post('/form').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ redirect: '/menu' , userId: expect.anything()});
-    savedUserId = response.body.userId;
-  });
-
-  it('debería manejar error por nombre en el formulario', async () => {
-    const data = {
-      nombre: 'Te',
-      edad: 33,
-      manoHabil: 'derecha',
-      manoUso: 'derecha',
-      horasUsoMovil: '1-3',
-    };
-
-    const response = await request(server).post('/form').send(data);
-    expect(response.status).toBe(400);
-  });
-
-  it('debería manejar error por edad en el formulario', async () => {
-    const data = {
-      nombre: 'Ana',
-      edad: 2,
-      manoHabil: 'derecha',
-      manoUso: 'derecha',
-      horasUsoMovil: '1-3',
-    };
-
-    const response = await request(server).post('/form').send(data);
-    expect(response.status).toBe(400);
-  });
 
   it('debería responder correctamente 0/3 en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
@@ -95,22 +144,42 @@ describe('Pruebas para el servidor', () => {
     expect(response.status).toBe(200);
   });
 
-  it('debería manejar correctamente el guardado del juego 1 (parte a)', async () => {
-    const data = {
-      scoregame1d: 100,
-    };
-    const response = await testSession.post('/gamesave1-a').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
-  });
+  describe('Pruebas para guardar datos juego 1', () => {
+    it('debería manejar correctamente el guardado del juego 1 (parte a)', async () => {
+      const data = {
+        scoregame1d: 100,
+      };
+      const response = await testSession.post('/gamesave1-a').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    });
 
-  it('debería manejar correctamente el guardado del juego 1 (parte b)', async () => {
-    const data = {
-      scoregame1i: 100,
-    };
-    const response = await testSession.post('/gamesave1-b').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave1-a', async () => {
+      const data = {
+        scoregame1d: 'no es un número',
+      };
+      const response = await testSession.post('/gamesave1-a').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Parámetros incorrectos.' });
+    });
+
+    it('debería manejar correctamente el guardado del juego 1 (parte b)', async () => {
+      const data = {
+        scoregame1i: 100,
+      };
+      const response = await testSession.post('/gamesave1-b').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    });
+
+    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave1-b', async () => {
+      const data = {
+        scoregame1i: 'no es un número',
+      };
+      const response = await testSession.post('/gamesave1-b').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Parámetros incorrectos.' });
+    });
   });
 
   it('debería manejar correctamente la ruta /resultados1', async () => {
@@ -123,6 +192,11 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosMedia1).toBe(0);
     expect(results.datosMedia2).toBe(0);
   });
+
+  it('debería lanzar un error en la función calculateResultsGame1 al pasar un userId inexistente', async () => {
+    await expect(calculateResultsGame1('5f9f9f9f9f9f9f9f9f9f9f9f')).rejects.toThrow('Usuario no encontrado');
+  });
+  
 
   it('debería responder correctamente 1/3 en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
@@ -142,24 +216,44 @@ describe('Pruebas para el servidor', () => {
     expect(response.status).toBe(200);
   });
 
-  it('debería manejar correctamente el guardado del juego 2 (parte a)', async () => {
-    const data = {
-      scoregame2d: 250.90,
-    };
+  describe('Pruebas para guardar datos juego 2', () => {
+    it('debería manejar correctamente el guardado del juego 2 (parte a)', async () => {
+      const data = {
+        scoregame2d: 250.90,
+      };
 
-    const response = await testSession.post('/gamesave2-a').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
-  });
+      const response = await testSession.post('/gamesave2-a').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    });
 
-  it('debería manejar correctamente el guardado del juego 2 (parte b)', async () => {
-    const data = {
-      scoregame2i: 250.90,
-    };
+    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave2-a', async () => {
+      const data = {
+        scoregame2d: 'no es un número',
+      };
+      const response = await testSession.post('/gamesave2-a').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Parámetros incorrectos.' });
+    });
 
-    const response = await testSession.post('/gamesave2-b').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    it('debería manejar correctamente el guardado del juego 2 (parte b)', async () => {
+      const data = {
+        scoregame2i: 250.90,
+      };
+
+      const response = await testSession.post('/gamesave2-b').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    });
+
+    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave2-b', async () => {
+      const data = {
+        scoregame2i: 'no es un número',
+      };
+      const response = await testSession.post('/gamesave2-b').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Parámetros incorrectos.' });
+    });
   });
 
   it('debería manejar correctamente la ruta /resultados2', async () => {
@@ -171,6 +265,10 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosUsuario2).toBe(250.90);
     expect(results.datosMedia2d).toBe(0);
     expect(results.datosMedia2i).toBe(0);
+  });
+
+  it('debería lanzar un error en la función calculateResultsGame2 al pasar un userId inexistente', async () => {
+    await expect(calculateResultsGame2('5f9f9f9f9f9f9f9f9f9f9f9f')).rejects.toThrow('Usuario no encontrado');
   });
 
   it('debería responder correctamente 2/3 en la ruta /menu', async () => {
@@ -191,26 +289,47 @@ describe('Pruebas para el servidor', () => {
     expect(response.status).toBe(200);
   });
 
-  it('debería manejar correctamente el guardado del juego 3 (parte a)', async () => {
-    const data = {
-      scoregame3d: 10204.10,
-    };
+  describe('Pruebas para guardar datos juego 3', () => {
+    it('debería manejar correctamente el guardado del juego 3 (parte a)', async () => {
+      const data = {
+        scoregame3d: 10204.10,
+      };
 
-    const response = await testSession.post('/gamesave3-a').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+      const response = await testSession.post('/gamesave3-a').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    });
+
+    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave3-a', async () => {
+      const data = {
+        scoregame3d: 'no es un número',
+      };
+      const response = await testSession.post('/gamesave3-a').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Parámetros incorrectos.' });
+    });
+
+    it('debería manejar correctamente el guardado del juego 3 (parte b)', async () => {
+      const data = {
+        scoregame3i: 10204.10,
+      };
+
+      const response = await testSession.post('/gamesave3-b').send(data);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
+    });
+
+    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave3-b', async () => {
+      const data = {
+        scoregame3i: 'no es un número',
+      };
+      const response = await testSession.post('/gamesave3-b').send(data);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Parámetros incorrectos.' });
+    });
+
   });
-
-  it('debería manejar correctamente el guardado del juego 3 (parte b)', async () => {
-    const data = {
-      scoregame3i: 10204.10,
-    };
-
-    const response = await testSession.post('/gamesave3-b').send(data);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
-  });
-
+  
   it('debería manejar correctamente la ruta /resultados3', async () => {
     const response = await testSession.get('/resultados3');
     expect(response.status).toBe(200);
@@ -220,6 +339,10 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosUsuario2).toBe(10204.10);
     expect(results.datosMedia3d).toBe(0);
     expect(results.datosMedia3i).toBe(0);
+  });
+
+  it('debería lanzar un error en la función calculateResultsGame3 al pasar un userId inexistente', async () => {
+    await expect(calculateResultsGame3('5f9f9f9f9f9f9f9f9f9f9f9f')).rejects.toThrow('Usuario no encontrado');
   });
 
   it('debería responder correctamente 3/3 en la ruta /menu', async () => {
@@ -455,6 +578,7 @@ describe('Pruebas para getHorasUsoTexto', () => {
     expect(texto).toBe('no especificado');
   });
 });
+
 
 
 });

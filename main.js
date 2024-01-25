@@ -69,7 +69,20 @@ const validateFormMiddleware = (data) => {
   if (isNaN(data.edad) || data.edad < 3 || data.edad > 99) {
     throw new Error('La edad debe estar entre 3 y 99 años.');
   }
+
+  if (data.manoHabil !== 'derecha' && data.manoHabil !== 'izquierda') {
+    throw new Error('La mano hábil debe ser derecha o izquierda.');
+  }
+
+  if (data.manoUso !== 'derecha' && data.manoUso !== 'izquierda') {
+    throw new Error('La mano de uso debe ser derecha o izquierda.');
+  }
+
+  if(data.horasUsoMovil !== '<1' && data.horasUsoMovil !== '1-3' && data.horasUsoMovil !== '3-5' && data.horasUsoMovil !== '5-8' && data.horasUsoMovil !== '>8') {
+    throw new Error('Las horas de uso del móvil deben ser las especificadas.');
+  }
 };
+
 
 
 // Middleware para manejar el formulario y redireccionar
@@ -88,8 +101,6 @@ server.post("/form", async (request, response, next) => {
     // Redirigir al usuario a la URL /menu después del registro exitoso
     response.status(200).json({ redirect: '/menu' , userId: userId});
   } catch (error) {
-    console.error(error);
-
     // Manejar errores específicos y enviar respuestas adecuadas
     if (error instanceof Error) {
       return response.status(400).json({ error: error.message });
@@ -184,7 +195,6 @@ server.post("/gamesave1-a", async (request, response, next) => {
     
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
-    console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });
@@ -210,7 +220,6 @@ server.post("/gamesave1-b", async (request, response, next) => {
 
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
-    console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });
@@ -248,7 +257,6 @@ server.get('/resultados1', async (req, res) => {
 
     res.render('resultados', { datosUsuario1: datos.datosUsuario1, datosUsuario2: datos.datosUsuario2, datosMedia1: datos.datosMedia1, datosMedia2: datos.datosMedia2 });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
@@ -283,7 +291,6 @@ server.post("/gamesave2-a", async (request, response, next) => {
     
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
-    console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });
@@ -309,7 +316,6 @@ server.post("/gamesave2-b", async (request, response, next) => {
 
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
-    console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });
@@ -347,7 +353,6 @@ server.get('/resultados2', async (req, res) => {
 
     res.render('resultados2', { datosUsuario2d: datos.datosUsuario1, datosUsuario2i: datos.datosUsuario2, datosMedia2d: datos.datosMedia2d, datosMedia2i: datos.datosMedia2i });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
@@ -382,7 +387,6 @@ server.post("/gamesave3-a", async (request, response, next) => {
     
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
-    console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });
@@ -408,7 +412,6 @@ server.post("/gamesave3-b", async (request, response, next) => {
 
     response.status(200).json({ message: 'Puntuación del juego guardada exitosamente.' });
   } catch (error) {
-    console.error(error);
     response.status(500).json({ error: "Error interno del servidor" });
   }
 });
@@ -446,7 +449,6 @@ server.get('/resultados3', async (req, res) => {
 
     res.render('resultados3', { datosUsuario3d: datos.datosUsuario1, datosUsuario3i: datos.datosUsuario2, datosMedia3d: datos.datosMedia3d, datosMedia3i: datos.datosMedia3i });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
@@ -616,7 +618,6 @@ server.get('/resultados-edad', async(req, res) => {
 
     res.render('resultados-edad', { rangoEdad, userScoreAboveAverage, usersInRange, averageScores, rankingUser1d, rankingUser1i, rankingUser2d, rankingUser2i, rankingUser3d, rankingUser3i });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
@@ -713,7 +714,6 @@ server.get('/resultados-mano-habil', async(req, res) => {
 
     res.render('resultados-mano-habil', { mano_habil_usuario, userScoreAboveAverage, usersManoHabil, averageScores, rankingUser1d, rankingUser1i, rankingUser2d, rankingUser2i, rankingUser3d, rankingUser3i });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
@@ -810,7 +810,6 @@ server.get('/resultados-mano-uso', async(req, res) => {
 
     res.render('resultados-mano-uso', { mano_uso_usuario, userScoreAboveAverage, usersManoUso, averageScores, rankingUser1d, rankingUser1i, rankingUser2d, rankingUser2i, rankingUser3d, rankingUser3i });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
@@ -933,7 +932,6 @@ server.get('/resultados-horas-uso', async(req, res) => {
 
     res.render('resultados-horas-uso', { horas_uso_usuario_texto, userScoreAboveAverage, usersHorasUso, averageScores, rankingUser1d, rankingUser1i, rankingUser2d, rankingUser2i, rankingUser3d, rankingUser3i });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
