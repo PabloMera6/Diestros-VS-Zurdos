@@ -49,9 +49,6 @@ setupDatabase("Usuario").then(() => {
   });
 });
 
-module.exports = {server, setupDatabase, collection, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3};
-
-
 server.get('/', (req, res) => {
   const indexPath = path.join(__dirname, 'public/index.html');
   res.sendFile(indexPath);
@@ -495,6 +492,35 @@ function assignRanks(users, scoreKey) {
   }));
 }
 
+async function calculateAge(edad_usuario) {
+  if (edad_usuario <= 14) {
+    rangoEdad = 'Inferior a 14 años';
+  } else if (edad_usuario >= 15 && edad_usuario <= 17) {
+    rangoEdad = '15 a 17 años';
+  } else if (edad_usuario >= 18 && edad_usuario <= 24) {
+    rangoEdad = '18 a 24 años';
+  } else if (edad_usuario >= 25 && edad_usuario <= 35) {
+    rangoEdad = '25 a 35 años';
+  } else if (edad_usuario >= 36 && edad_usuario <= 45) {
+    rangoEdad = '36 a 45 años';
+  } else if (edad_usuario >= 46 && edad_usuario <= 60) {
+    rangoEdad = '46 a 60 años';
+  } else {
+    rangoEdad = 'Superior a 60 años';
+  }
+  return rangoEdad;
+}
+
+const ageRanges = {
+  'Inferior a 14 años': { min: 3, max: 14 },
+  '15 a 17 años': { min: 15, max: 17 },
+  '18 a 24 años': { min: 18, max: 24 },
+  '25 a 35 años': { min: 25, max: 35 },
+  '36 a 45 años': { min: 36, max: 45 },
+  '46 a 60 años': { min: 46, max: 60 },
+  'Superior a 60 años': { min: 61, max: 99 },
+};
+
 server.get('/resultados-edad', async(req, res) => {
   try {
     const userId = new ObjectId(req.session.userId);
@@ -508,34 +534,9 @@ server.get('/resultados-edad', async(req, res) => {
     if (!userData) {
       return res.status(404).json({ error: 'Usuario no encontrado.' });
     }
-    const ageRanges = {
-      'Inferior a 14 años': { min: 3, max: 14 },
-      '15 a 17 años': { min: 15, max: 17 },
-      '18 a 24 años': { min: 18, max: 24 },
-      '25 a 35 años': { min: 25, max: 35 },
-      '36 a 45 años': { min: 36, max: 45 },
-      '46 a 60 años': { min: 46, max: 60 },
-      'Superior a 60 años': { min: 61, max: 99 },
-     };
      
-    let rangoEdad;
     const edad_usuario = userData.edad;
-
-    if (edad_usuario <= 14) {
-    rangoEdad = 'Inferior a 14 años';
-    } else if (edad_usuario >= 15 && edad_usuario <= 17) {
-    rangoEdad = '15 a 17 años';
-    } else if (edad_usuario >= 18 && edad_usuario <= 24) {
-    rangoEdad = '18 a 24 años';
-    } else if (edad_usuario >= 25 && edad_usuario <= 35) {
-    rangoEdad = '25 a 35 años';
-    } else if (edad_usuario >= 36 && edad_usuario <= 45) {
-    rangoEdad = '36 a 45 años';
-    } else if (edad_usuario >= 46 && edad_usuario <= 60) {
-    rangoEdad = '46 a 60 años';
-    } else {
-    rangoEdad = 'Superior a 60 años';
-    }
+    let rangoEdad = await calculateAge(edad_usuario);
 
     const { min: minAge, max: maxAge } = ageRanges[rangoEdad];
     
@@ -814,6 +815,31 @@ server.get('/resultados-mano-uso', async(req, res) => {
   }
 });
 
+function getHorasUsoTexto(horas_uso_usuario) {
+  let horas_uso_usuario_texto;
+  switch (horas_uso_usuario) {
+    case '<1':
+      horas_uso_usuario_texto = 'menos de 1 hora';
+      break;
+    case '1-3':
+      horas_uso_usuario_texto = 'entre 1 y 3 horas';
+      break;
+    case '3-5':
+      horas_uso_usuario_texto = 'entre 3 y 5 horas';
+      break;
+    case '5-8':
+      horas_uso_usuario_texto = 'entre 5 y 8 horas';
+      break;
+    case '>8':
+      horas_uso_usuario_texto = 'más de 8 horas';
+      break;
+    default:
+      horas_uso_usuario_texto = 'no especificado';
+  }
+  return horas_uso_usuario_texto;
+}
+
+
 server.get('/resultados-horas-uso', async(req, res) => {
   try {
     const userId = new ObjectId(req.session.userId);
@@ -829,29 +855,8 @@ server.get('/resultados-horas-uso', async(req, res) => {
     }
   
     const horas_uso_usuario = userData.horasUsoMovil;
+    const horas_uso_usuario_texto = getHorasUsoTexto(horas_uso_usuario);
 
-    let horas_uso_usuario_texto;
-
-    switch (horas_uso_usuario) {
-      case '<1':
-        horas_uso_usuario_texto = 'menos de 1 hora';
-        break;
-      case '1-3':
-        horas_uso_usuario_texto = 'entre 1 y 3 horas';
-        break;
-      case '3-5':
-        horas_uso_usuario_texto = 'entre 3 y 5 horas';
-        break;
-      case '5-8':
-        horas_uso_usuario_texto = 'entre 5 y 8 horas';
-        break;
-      case '>8':
-        horas_uso_usuario_texto = 'más de 8 horas';
-        break;
-      default:
-        horas_uso_usuario_texto = 'no especificado';
-    }
-    
     const usersHorasUso = await collection.find({
       horasUsoMovil: horas_uso_usuario
      }).toArray();
@@ -932,3 +937,5 @@ server.get('/resultados-horas-uso', async(req, res) => {
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
+
+module.exports = {server, setupDatabase, collection, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3, sortByScore, compareNumbers1and3, compareNumbers2, calculateAge, getHorasUsoTexto};

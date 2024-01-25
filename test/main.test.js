@@ -1,6 +1,6 @@
 const request = require('supertest');
 const session = require('supertest-session');
-const {server, setupDatabase, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3}= require('../main.js');
+const {server, setupDatabase, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3, sortByScore, compareNumbers1and3, compareNumbers2, calculateAge, getHorasUsoTexto}= require('../main.js');
 const cheerio = require('cheerio');
 const { MongoClient, ObjectId } = require('mongodb');
 const uri = 'mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/';
@@ -126,7 +126,7 @@ describe('Pruebas para el servidor', () => {
 
   it('debería responder correctamente 1/3 en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
-    const response = await request(server).get('/menu');
+    const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
     expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: false, juego3_done: false, mostrar_resultados: false }));
     renderSpy.mockRestore();
@@ -175,7 +175,7 @@ describe('Pruebas para el servidor', () => {
 
   it('debería responder correctamente 2/3 en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
-    const response = await request(server).get('/menu');
+    const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
     expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: false, mostrar_resultados: false }));
     renderSpy.mockRestore();
@@ -224,7 +224,7 @@ describe('Pruebas para el servidor', () => {
 
   it('debería responder correctamente 3/3 en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
-    const response = await request(server).get('/menu');
+    const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
     expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: true, mostrar_resultados: true }));
     renderSpy.mockRestore();
@@ -345,4 +345,116 @@ describe('Pruebas para el servidor', () => {
     const messageCount = actualMessages.filter((msg) => msg === expectedMessage).length;
     expect(messageCount).toBe(6);
   });
+
+  it('debería responder correctamente a la ruta /resultados-finales', async () => {
+    const response = await request(server).get('/resultados-finales');
+    expect(response.status).toBe(200);
+  });
+
+  it('debería ordenar correctamente los usuarios por puntuación o tiempo en los juegos 1 y 3', () => {
+    const users = [
+      { score: NaN },
+      { score: 10 },
+      { score: 20 },
+      { score: NaN },
+      { score: 30 },
+    ];
+    const sortedUsers = sortByScore(users, 'score', compareNumbers1and3);
+    expect(sortedUsers).toEqual([
+      { score: 30 },
+      { score: 20 },
+      { score: 10 },
+      { score: NaN },
+      { score: NaN },
+    ]);
+  });
+
+  it('debería ordenar correctamente los usuarios por tiempo en el juego 2', () => {
+    const users = [
+      { score: NaN },
+      { score: 10 },
+      { score: 20 },
+      { score: NaN },
+      { score: 30 },
+    ];
+    const sortedUsers = sortByScore(users, 'score', compareNumbers2);
+    expect(sortedUsers).toEqual([
+      { score: 10 },
+      { score: 20 },
+      { score: 30 },
+      { score: NaN },
+      { score: NaN },
+    ]);    
+});
+
+describe('Pruebas para calculateAge', () => {
+  it('debería devolver "Inferior a 14 años" para edades menores o iguales a 14', async () => {
+    const rangoEdad = await calculateAge(14);
+    expect(rangoEdad).toBe('Inferior a 14 años');
+  });
+
+  it('debería devolver "15 a 17 años" para edades entre 15 y 17', async () => {
+    const rangoEdad = await calculateAge(16);
+    expect(rangoEdad).toBe('15 a 17 años');
+  });
+
+  it('debería devolver "18 a 25 años" para edades entre 18 y 25', async () => {
+    const rangoEdad = await calculateAge(20);
+    expect(rangoEdad).toBe('18 a 24 años');
+  });
+
+  it('debería devolver "25 a 35 años" para edades entre 26 y 35', async () => {
+    const rangoEdad = await calculateAge(30);
+    expect(rangoEdad).toBe('25 a 35 años');
+  });
+
+  it('debería devolver "36 a 45 años" para edades entre 36 y 45', async () => {
+    const rangoEdad = await calculateAge(40);
+    expect(rangoEdad).toBe('36 a 45 años');
+  });
+
+  it('debería devolver "46 a 60 años" para edades entre 46 y 60', async () => {
+    const rangoEdad = await calculateAge(50);
+    expect(rangoEdad).toBe('46 a 60 años');
+  });
+
+  it('debería devolver "Superior a 60 años" para edades mayores a 60', async () => {
+    const rangoEdad = await calculateAge(61);
+    expect(rangoEdad).toBe('Superior a 60 años');
+  });
+});
+
+describe('Pruebas para getHorasUsoTexto', () => {
+  it('debería devolver "menos de 1 hora" para "<1"', () => {
+    const texto = getHorasUsoTexto('<1');
+    expect(texto).toBe('menos de 1 hora');
+  });
+
+  it('debería devolver "entre 1 y 3 horas" para "1-3"', () => {
+    const texto = getHorasUsoTexto('1-3');
+    expect(texto).toBe('entre 1 y 3 horas');
+  });
+
+  it('debería devolver "entre 3 y 5 horas" para "3-5"', () => {
+    const texto = getHorasUsoTexto('3-5');
+    expect(texto).toBe('entre 3 y 5 horas');
+  });
+
+  it('debería devolver "entre 5 y 8 horas" para "5-8"', () => {
+    const texto = getHorasUsoTexto('5-8');
+    expect(texto).toBe('entre 5 y 8 horas');
+  });
+
+  it('debería devolver "más de 8 horas" para ">8"', () => {
+    const texto = getHorasUsoTexto('>8');
+    expect(texto).toBe('más de 8 horas');
+  });
+
+  it('debería devolver "no especificado" para cualquier otro valor', () => {
+    const texto = getHorasUsoTexto('otro valor');
+    expect(texto).toBe('no especificado');
+  });
+});
+
+
 });
