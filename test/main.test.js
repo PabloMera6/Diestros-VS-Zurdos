@@ -51,9 +51,22 @@ describe('Pruebas para el servidor', () => {
     savedUserId = response.body.userId;
   });
 
-  it('debería manejar errores en el formulario', async () => {
+  it('debería manejar error por nombre en el formulario', async () => {
     const data = {
       nombre: 'Te',
+      edad: 33,
+      manoHabil: 'derecha',
+      manoUso: 'derecha',
+      horasUsoMovil: '1-3',
+    };
+
+    const response = await request(server).post('/form').send(data);
+    expect(response.status).toBe(400);
+  });
+
+  it('debería manejar error por edad en el formulario', async () => {
+    const data = {
+      nombre: 'Ana',
       edad: 2,
       manoHabil: 'derecha',
       manoUso: 'derecha',
@@ -64,9 +77,12 @@ describe('Pruebas para el servidor', () => {
     expect(response.status).toBe(400);
   });
 
-  it('debería responder correctamente a la ruta /menu', async () => {
+  it('debería responder correctamente 0/3 en la ruta /menu', async () => {
+    const renderSpy = jest.spyOn(server.response, 'render');
     const response = await request(server).get('/menu');
     expect(response.status).toBe(200);
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: false, juego2_done: false, juego3_done: false, mostrar_resultados: false }));
+    renderSpy.mockRestore();
   });
 
   it('debería responder correctamente a la ruta /introduccion-1', async () => {
@@ -106,6 +122,14 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosUsuario2).toBe(100);
     expect(results.datosMedia1).toBe(0);
     expect(results.datosMedia2).toBe(0);
+  });
+
+  it('debería responder correctamente 1/3 en la ruta /menu', async () => {
+    const renderSpy = jest.spyOn(server.response, 'render');
+    const response = await request(server).get('/menu');
+    expect(response.status).toBe(200);
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: false, juego3_done: false, mostrar_resultados: false }));
+    renderSpy.mockRestore();
   });
 
   it('debería responder correctamente a la ruta /introduccion-2', async () => {
@@ -149,6 +173,14 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosMedia2i).toBe(0);
   });
 
+  it('debería responder correctamente 2/3 en la ruta /menu', async () => {
+    const renderSpy = jest.spyOn(server.response, 'render');
+    const response = await request(server).get('/menu');
+    expect(response.status).toBe(200);
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: false, mostrar_resultados: false }));
+    renderSpy.mockRestore();
+  });
+
   it('debería responder correctamente a la ruta /introduccion-3', async () => {
     const response = await request(server).get('/introduccion-3');
     expect(response.status).toBe(200);
@@ -190,6 +222,14 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosMedia3i).toBe(0);
   });
 
+  it('debería responder correctamente 3/3 en la ruta /menu', async () => {
+    const renderSpy = jest.spyOn(server.response, 'render');
+    const response = await request(server).get('/menu');
+    expect(response.status).toBe(200);
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: true, mostrar_resultados: true }));
+    renderSpy.mockRestore();
+  });
+
   it('debería responder correctamente a la ruta /resultados-edad', async () => {
     const response = await testSession.get('/resultados-edad');
     expect(response.status).toBe(200);
@@ -199,6 +239,7 @@ describe('Pruebas para el servidor', () => {
     expect($('h2.orange-box')).toHaveLength(6);
     expect($('.ranking-number')).toHaveLength(6);
     expect($('.highlight')).toHaveLength(6);  
+    
     // Verifica que los textos de reacción y coordinación estén presentes
     const texts = ['Velocidad (Derecha)', 'Velocidad (Izquierda)','Reacción (Derecha)', 'Reacción (Izquierda)', 'Coordinación (Derecha)', 'Coordinación (Izquierda)'];
     texts.forEach((text) => {
@@ -210,5 +251,98 @@ describe('Pruebas para el servidor', () => {
     $('.ranking-number').each((i, elem) => {
       expect($(elem).text()).toBe(expectedRanking);
     });
+
+    // Verifica que el mensaje '¡Estás en la media!' aparezca 6 veces
+    const expectedMessage = '¡Estás en la media!';
+    const actualMessages = $('.highlight').map((i, elem) => $(elem).text()).get();
+    const messageCount = actualMessages.filter((msg) => msg === expectedMessage).length;
+    expect(messageCount).toBe(6);
+  });
+
+  it('debería responder correctamente a la ruta /resultados-mano-habil', async () => {
+    const response = await testSession.get('/resultados-mano-habil');
+    expect(response.status).toBe(200);
+    const $ = cheerio.load(response.text);
+
+    expect($('title').text()).toBe('Resultados por Mano Hábil');
+    expect($('h2.orange-box')).toHaveLength(6);
+    expect($('.ranking-number')).toHaveLength(6);
+    expect($('.highlight')).toHaveLength(6);  
+    
+    // Verifica que los textos de reacción y coordinación estén presentes
+    const texts = ['Velocidad (Derecha)', 'Velocidad (Izquierda)','Reacción (Derecha)', 'Reacción (Izquierda)', 'Coordinación (Derecha)', 'Coordinación (Izquierda)'];
+    texts.forEach((text) => {
+      expect($('body').text()).toContain(text);
+    });
+
+    // Verifica que los rankings sean correctos
+    const expectedRanking = '1';
+    $('.ranking-number').each((i, elem) => {
+      expect($(elem).text()).toBe(expectedRanking);
+    });
+
+    // Verifica que el mensaje '¡Estás en la media!' aparezca 6 veces
+    const expectedMessage = '¡Estás en la media!';
+    const actualMessages = $('.highlight').map((i, elem) => $(elem).text()).get();
+    const messageCount = actualMessages.filter((msg) => msg === expectedMessage).length;
+    expect(messageCount).toBe(6);
+  });
+
+  it('debería responder correctamente a la ruta /resultados-mano-uso', async () => {
+    const response = await testSession.get('/resultados-mano-uso');
+    expect(response.status).toBe(200);
+    const $ = cheerio.load(response.text);
+
+    expect($('title').text()).toBe('Resultados por Mano Uso Móvil');
+    expect($('h2.orange-box')).toHaveLength(6);
+    expect($('.ranking-number')).toHaveLength(6);
+    expect($('.highlight')).toHaveLength(6);  
+    
+    // Verifica que los textos de reacción y coordinación estén presentes
+    const texts = ['Velocidad (Derecha)', 'Velocidad (Izquierda)','Reacción (Derecha)', 'Reacción (Izquierda)', 'Coordinación (Derecha)', 'Coordinación (Izquierda)'];
+    texts.forEach((text) => {
+      expect($('body').text()).toContain(text);
+    });
+
+    // Verifica que los rankings sean correctos
+    const expectedRanking = '1';
+    $('.ranking-number').each((i, elem) => {
+      expect($(elem).text()).toBe(expectedRanking);
+    });
+
+    // Verifica que el mensaje '¡Estás en la media!' aparezca 6 veces
+    const expectedMessage = '¡Estás en la media!';
+    const actualMessages = $('.highlight').map((i, elem) => $(elem).text()).get();
+    const messageCount = actualMessages.filter((msg) => msg === expectedMessage).length;
+    expect(messageCount).toBe(6);
+  });
+
+  it('debería responder correctamente a la ruta /resultados-horas-uso', async () => {
+    const response = await testSession.get('/resultados-horas-uso');
+    expect(response.status).toBe(200);
+    const $ = cheerio.load(response.text);
+
+    expect($('title').text()).toBe('Resultados por Horas Uso Móvil');
+    expect($('h2.orange-box')).toHaveLength(6);
+    expect($('.ranking-number')).toHaveLength(6);
+    expect($('.highlight')).toHaveLength(6);  
+    
+    // Verifica que los textos de reacción y coordinación estén presentes
+    const texts = ['Velocidad (Derecha)', 'Velocidad (Izquierda)','Reacción (Derecha)', 'Reacción (Izquierda)', 'Coordinación (Derecha)', 'Coordinación (Izquierda)'];
+    texts.forEach((text) => {
+      expect($('body').text()).toContain(text);
+    });
+
+    // Verifica que los rankings sean correctos
+    const expectedRanking = '1';
+    $('.ranking-number').each((i, elem) => {
+      expect($(elem).text()).toBe(expectedRanking);
+    });
+
+    // Verifica que el mensaje '¡Estás en la media!' aparezca 6 veces
+    const expectedMessage = '¡Estás en la media!';
+    const actualMessages = $('.highlight').map((i, elem) => $(elem).text()).get();
+    const messageCount = actualMessages.filter((msg) => msg === expectedMessage).length;
+    expect(messageCount).toBe(6);
   });
 });
