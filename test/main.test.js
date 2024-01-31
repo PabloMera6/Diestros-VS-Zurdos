@@ -32,6 +32,15 @@ describe('Pruebas para el servidor', () => {
     expect(response.type).toBe('text/html');
   });
 
+  it('debería responder correctamente "Rellenar mis datos" en la ruta /menu', async () => {
+    const renderSpy = jest.spyOn(server.response, 'render');
+    const response = await testSession.get('/menu');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('Rellenar mis datos');
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: false, juego2_done: false, juego3_done: false, mostrar_resultados: false, conectado: false  }));
+    renderSpy.mockRestore();
+  });
+
   describe('Pruebas para el formulario', () => {
     it('debería responder correctamente a la ruta /form', async () => {
       const response = await request(server).get('/form');
@@ -128,14 +137,16 @@ describe('Pruebas para el servidor', () => {
 
   it('debería responder correctamente 0/3 en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
-    const response = await request(server).get('/menu');
+    const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
-    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: false, juego2_done: false, juego3_done: false, mostrar_resultados: false }));
+    expect(response.text).toContain('0/3');
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: false, juego2_done: false, juego3_done: false, mostrar_resultados: false, conectado: true  }));
     renderSpy.mockRestore();
   });
 
   it('debería responder correctamente a la ruta /introduccion-1', async () => {
     const response = await request(server).get('/introduccion-1');
+    expect(response.text).toContain('Comenzar a jugar');
     expect(response.status).toBe(200);
   });
 
@@ -154,7 +165,7 @@ describe('Pruebas para el servidor', () => {
       expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
     });
 
-    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave1-a', async () => {
+    it('debería devolver un error 400 si los parámetros son incorrectos en el guardado del juego 1 (parte a)', async () => {
       const data = {
         scoregame1d: 'no es un número',
       };
@@ -172,7 +183,7 @@ describe('Pruebas para el servidor', () => {
       expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
     });
 
-    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave1-b', async () => {
+    it('debería devolver un error 400 si los parámetros son incorrectos en el guardado del juego 1 (parte b)', async () => {
       const data = {
         scoregame1i: 'no es un número',
       };
@@ -193,7 +204,7 @@ describe('Pruebas para el servidor', () => {
     expect(results.datosMedia2).toBe(0);
   });
 
-  it('debería lanzar un error en la función calculateResultsGame1 al pasar un userId inexistente', async () => {
+  it('debería lanzar un error al pasar un userId inexistente', async () => {
     await expect(calculateResultsGame1('5f9f9f9f9f9f9f9f9f9f9f9f')).rejects.toThrow('Usuario no encontrado');
   });
   
@@ -202,12 +213,14 @@ describe('Pruebas para el servidor', () => {
     const renderSpy = jest.spyOn(server.response, 'render');
     const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
-    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: false, juego3_done: false, mostrar_resultados: false }));
+    expect(response.text).toContain('1/3');
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: false, juego3_done: false, mostrar_resultados: false, conectado: true }));
     renderSpy.mockRestore();
   });
 
   it('debería responder correctamente a la ruta /introduccion-2', async () => {
     const response = await request(server).get('/introduccion-2');
+    expect(response.text).toContain('Comenzar a jugar');
     expect(response.status).toBe(200);
   });
 
@@ -227,7 +240,7 @@ describe('Pruebas para el servidor', () => {
       expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
     });
 
-    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave2-a', async () => {
+    it('debería devolver un error 400 si los parámetros son incorrectos en el guardado del juego 2 (parte a)', async () => {
       const data = {
         scoregame2d: 'no es un número',
       };
@@ -246,7 +259,7 @@ describe('Pruebas para el servidor', () => {
       expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
     });
 
-    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave2-b', async () => {
+    it('debería devolver un error 400 si los parámetros son incorrectos en el guardado del juego 2 (parte b)', async () => {
       const data = {
         scoregame2i: 'no es un número',
       };
@@ -275,12 +288,14 @@ describe('Pruebas para el servidor', () => {
     const renderSpy = jest.spyOn(server.response, 'render');
     const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
-    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: false, mostrar_resultados: false }));
+    expect(response.text).toContain('2/3');
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: false, mostrar_resultados: false, conectado: true }));
     renderSpy.mockRestore();
   });
 
   it('debería responder correctamente a la ruta /introduccion-3', async () => {
     const response = await request(server).get('/introduccion-3');
+    expect(response.text).toContain('Comenzar a jugar');
     expect(response.status).toBe(200);
   });
 
@@ -300,7 +315,7 @@ describe('Pruebas para el servidor', () => {
       expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
     });
 
-    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave3-a', async () => {
+    it('debería devolver un error 400 si los parámetros son incorrectos en el guardado del juego 3 (parte a)', async () => {
       const data = {
         scoregame3d: 'no es un número',
       };
@@ -319,7 +334,7 @@ describe('Pruebas para el servidor', () => {
       expect(response.body).toEqual({ message: 'Puntuación del juego guardada exitosamente.' });
     });
 
-    it('debería devolver un error 400 si los parámetros son incorrectos en /gamesave3-b', async () => {
+    it('debería devolver un error 400 si los parámetros son incorrectos en el guardado del juego 3 (parte b)', async () => {
       const data = {
         scoregame3i: 'no es un número',
       };
@@ -345,11 +360,12 @@ describe('Pruebas para el servidor', () => {
     await expect(calculateResultsGame3('5f9f9f9f9f9f9f9f9f9f9f9f')).rejects.toThrow('Usuario no encontrado');
   });
 
-  it('debería responder correctamente 3/3 en la ruta /menu', async () => {
+  it('debería responder correctamente "Resultados Finales" en la ruta /menu', async () => {
     const renderSpy = jest.spyOn(server.response, 'render');
     const response = await testSession.get('/menu');
     expect(response.status).toBe(200);
-    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: true, mostrar_resultados: true }));
+    expect(response.text).toContain('Resultados Finales');
+    expect(renderSpy).toHaveBeenCalledWith('menu', expect.objectContaining({ juego1_done: true, juego2_done: true, juego3_done: true, mostrar_resultados: true, conectado: true }));
     renderSpy.mockRestore();
   });
 

@@ -458,7 +458,7 @@ server.get('/resultados-finales', (req, res) => {
   res.sendFile(indexPath);
 });
 
-// Función de comparación personalizada para manejar NaN
+
 const compareNumbers1and3 = (a, b) => {
   if (isNaN(a) && isNaN(b)) {
     return 0;
