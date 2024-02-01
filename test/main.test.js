@@ -537,12 +537,12 @@ describe('Pruebas para calculateAge', () => {
     expect(rangoEdad).toBe('15 a 17 años');
   });
 
-  it('debería devolver "18 a 25 años" para edades entre 18 y 25', async () => {
+  it('debería devolver "18 a 24 años" para edades entre 18 y 24', async () => {
     const rangoEdad = await calculateAge(20);
     expect(rangoEdad).toBe('18 a 24 años');
   });
 
-  it('debería devolver "25 a 35 años" para edades entre 26 y 35', async () => {
+  it('debería devolver "25 a 35 años" para edades entre 25 y 35', async () => {
     const rangoEdad = await calculateAge(30);
     expect(rangoEdad).toBe('25 a 35 años');
   });

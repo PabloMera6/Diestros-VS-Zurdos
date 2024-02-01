@@ -495,6 +495,7 @@ function assignRanks(users, scoreKey) {
 }
 
 async function calculateAge(edad_usuario) {
+  let rangoEdad;
   if (edad_usuario <= 14) {
     rangoEdad = 'Inferior a 14 años';
   } else if (edad_usuario >= 15 && edad_usuario <= 17) {
