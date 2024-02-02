@@ -1,5 +1,4 @@
 import ScreenController from './screenController.js';
-import Phaser from '../../phaser.js';
 
 export class CountDown extends Phaser.Scene {
     constructor() {
