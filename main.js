@@ -5,6 +5,7 @@ const session = require('express-session');
 const BodyParser = require("body-parser");
 const Cors = require("cors");
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const server = express();
 server.use(express.static('public'));
@@ -18,6 +19,7 @@ server.set('views', path.join(__dirname, 'views'));
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
+server.use(cookieParser());
 server.set('view engine', 'ejs');
 
 server.use(session({
@@ -98,6 +100,9 @@ server.post("/form", async (request, response, next) => {
     const userId = result.insertedId.toString();
     request.session.userId = userId;
 
+    //Añadir a las cookies durante 1 día
+    response.cookie('userId', userId, { maxAge: 86400000 });
+
     // Redirigir al usuario a la URL /menu después del registro exitoso
     response.status(200).json({ redirect: '/menu' , userId: userId});
   } catch (error) {
@@ -117,7 +122,7 @@ server.get('/menu', async (req, res) => {
   let juego2_done = false;
   let juego3_done = false;
   let completedGamesCount = 0;
-  const userId = new ObjectId(req.session.userId);
+  const userId = new ObjectId(req.cookies.userId);
   const userExist = await collection.findOne({ _id: userId });
   if(userExist) {
     conectado = true;

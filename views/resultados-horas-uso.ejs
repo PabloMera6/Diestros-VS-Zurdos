@@ -79,7 +79,7 @@
     <% if (playerScore3d > averageScores[0].avgScoreGame3d) { %>
       <p class="highlight">¡Enhorabuena! Duras <%= ((playerScore3d - averageScores[0].avgScoreGame3d)/1000).toFixed(2) %> segundos más que la media.</p>
     <% } else if (playerScore3d < averageScores[0].avgScoreGame3d){ %>
-      <p class="highlight">Ánimo. Duras <%= ((averageScores[0].avgScoreGame3d - playerScore3d) /1000).toFixed(2) %> menos que la media.</p>
+      <p class="highlight">Ánimo. Duras <%= ((averageScores[0].avgScoreGame3d - playerScore3d) /1000).toFixed(2) %> segundos menos que la media.</p>
     <% } else { %>
       <p class="highlight">¡Estás en la media!</p>
     <% } %>
