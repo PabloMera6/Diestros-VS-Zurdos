@@ -1,16 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Zurdos vs Diestros</title>
- <link rel="icon" type="image/x-icon" href="assets/images/favicon.jpg">
- <link rel="stylesheet" type="text/css" href="/assets/css/inicio.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instrucciones del Juego</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.jpg">
+  <link rel="stylesheet" type="text/css" href="/assets/css/inicio.css">
 </head>
 <body>
- <h1>Bienvenido a Zurdos vs Diestros</h1>
- <p>¡Prepárate para llevar al máximo tus habilidades!</p>
- <img src="/assets/images/pulso.jpg" alt="Pulso">
- <button onclick="location.href='/form'">Comenzar</button>
+  <img src="/assets/images/fondo-inicio.jpg" alt="Imagen Inicio" class="game-image">
+  <div id="content">
+    <div class="instructions">
+      <div class="text-container">
+        <p>
+            ¿El móvil es un factor importante en tu día a día? 
+        </p>
+        <p>
+            ¿Alguna vez has pensado que estabas <em>enganchado</em>?
+        </p>
+        <p>
+            Al hacer algo <strong>diariamente</strong>, podemos considerarnos expertos en ello 
+        </p>
+        <p>
+            <strong>¿Por qué no demostrarlo? </strong>
+        </p>
+        <p>
+            En este juego podrás medir tus habilidades con el móvil y compararlas con el resto de jugadores
+        </p>
+        <p>
+            <strong>¿Estás listo?</strong>
+        </p>
+      </div>
+    
+      <button onclick="startGame()" class="green-button">
+        <strong>Comenzar</strong>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function startGame() {
+      window.location.href = "/form";
+    }
+  </script>
+
 </body>
+
 </html>

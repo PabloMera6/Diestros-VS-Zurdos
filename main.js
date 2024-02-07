@@ -181,7 +181,7 @@ server.get('/game1', (req, res) => {
 
 server.post("/gamesave1-a", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId);
+    const userId = new ObjectId(request.cookies.userId);
     const { scoregame1d } = request.body;
 
     if (!userId || isNaN(scoregame1d)) {
@@ -206,7 +206,7 @@ server.post("/gamesave1-a", async (request, response, next) => {
 
 server.post("/gamesave1-b", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId);
+    const userId = new ObjectId(request.cookies.userId);
     const { scoregame1i } = request.body;
 
     if (!userId || isNaN(scoregame1i)) {
@@ -252,7 +252,7 @@ async function calculateResultsGame1(userId) {
 
 server.get('/resultados1', async (req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
@@ -278,7 +278,7 @@ server.get('/game2', (req, res) => {
 
 server.post("/gamesave2-a", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId);
+    const userId = new ObjectId(request.cookies.userId);
     const { scoregame2d } = request.body;
     if (!userId || isNaN(scoregame2d)) {
       return response.status(400).json({ error: 'Parámetros incorrectos.' });
@@ -302,7 +302,7 @@ server.post("/gamesave2-a", async (request, response, next) => {
 
 server.post("/gamesave2-b", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId);
+    const userId = new ObjectId(request.cookies.userId);
     const { scoregame2i } = request.body;
 
     if (!userId || isNaN(scoregame2i)) {
@@ -348,7 +348,7 @@ async function calculateResultsGame2(userId) {
 
 server.get('/resultados2', async (req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
@@ -374,7 +374,7 @@ server.get('/game3', (req, res) => {
 
 server.post("/gamesave3-a", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId);
+    const userId = new ObjectId(request.cookies.userId);
     const { scoregame3d } = request.body;
     if (!userId || isNaN(scoregame3d)) {
       return response.status(400).json({ error: 'Parámetros incorrectos.' });
@@ -398,7 +398,7 @@ server.post("/gamesave3-a", async (request, response, next) => {
 
 server.post("/gamesave3-b", async (request, response, next) => {
   try {
-    const userId = new ObjectId(request.session.userId);
+    const userId = new ObjectId(request.cookies.userId);
     const { scoregame3i } = request.body;
 
     if (!userId || isNaN(scoregame3i)) {
@@ -444,7 +444,7 @@ async function calculateResultsGame3(userId) {
 
 server.get('/resultados3', async (req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
@@ -531,7 +531,7 @@ const ageRanges = {
 
 server.get('/resultados-edad', async(req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
@@ -630,7 +630,7 @@ server.get('/resultados-edad', async(req, res) => {
 
 server.get('/resultados-mano-habil', async(req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
@@ -726,7 +726,7 @@ server.get('/resultados-mano-habil', async(req, res) => {
 
 server.get('/resultados-mano-uso', async(req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
@@ -847,7 +847,7 @@ function getHorasUsoTexto(horas_uso_usuario) {
 
 server.get('/resultados-horas-uso', async(req, res) => {
   try {
-    const userId = new ObjectId(req.session.userId);
+    const userId = new ObjectId(req.cookies.userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'ID de usuario no válido.' });
