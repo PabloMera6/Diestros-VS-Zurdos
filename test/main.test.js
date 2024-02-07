@@ -485,6 +485,35 @@ describe('Pruebas para el servidor', () => {
     expect(messageCount).toBe(6);
   });
 
+  it('debería responder correctamente a la ruta /resultados-generales', async () => {
+    const response = await testSession.get('/resultados-generales');
+    expect(response.status).toBe(200);
+    const $ = cheerio.load(response.text);
+
+    expect($('title').text()).toBe('Resultados Generales');
+    expect($('h2.orange-box')).toHaveLength(6);
+    expect($('.ranking-number')).toHaveLength(6);
+    expect($('.highlight')).toHaveLength(6);  
+    
+    // Verifica que los textos de reacción y coordinación estén presentes
+    const texts = ['Velocidad (Derecha)', 'Velocidad (Izquierda)','Reacción (Derecha)', 'Reacción (Izquierda)', 'Coordinación (Derecha)', 'Coordinación (Izquierda)'];
+    texts.forEach((text) => {
+      expect($('body').text()).toContain(text);
+    });
+
+    // Verifica que los rankings sean correctos
+    const expectedRanking = '1';
+    $('.ranking-number').each((i, elem) => {
+      expect($(elem).text()).toBe(expectedRanking);
+    });
+
+    // Verifica que el mensaje '¡Estás en la media!' aparezca 6 veces
+    const expectedMessage = '¡Estás en la media!';
+    const actualMessages = $('.highlight').map((i, elem) => $(elem).text()).get();
+    const messageCount = actualMessages.filter((msg) => msg === expectedMessage).length;
+    expect(messageCount).toBe(6);
+  });
+
   it('debería responder correctamente a la ruta /resultados-finales', async () => {
     const response = await request(server).get('/resultados-finales');
     expect(response.status).toBe(200);

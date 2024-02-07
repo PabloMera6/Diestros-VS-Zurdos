@@ -942,4 +942,94 @@ server.get('/resultados-horas-uso', async(req, res) => {
   }
 });
 
+server.get('/resultados-generales', async(req, res) => {
+  try {
+    const userId = new ObjectId(req.cookies.userId);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'ID de usuario no válido.' });
+    }
+
+    const userData = await collection.findOne({ _id: userId });
+
+    if (!userData) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+  
+    const usersActuales = await collection.find({
+     }).toArray();
+
+    const averageScores = await collection.aggregate([
+    {
+    $group: {
+      _id: null,
+      avgScoreGame1d: { $avg: { $ifNull: ['$scoregame1d', 0] } },
+      avgScoreGame1i: { $avg: { $ifNull: ['$scoregame1i', 0] } },
+      avgScoreGame2d: { $avg: { $ifNull: ['$scoregame2d', 2000] } },
+      avgScoreGame2i: { $avg: { $ifNull: ['$scoregame2i', 2000] } },
+      avgScoreGame3d: { $avg: { $ifNull: ['$scoregame3d', 0] } },
+      avgScoreGame3i: { $avg: { $ifNull: ['$scoregame3i', 0] } },
+    },
+    },
+    ]).toArray();
+
+    // Calcular la puntuación de cada usuario por encima de la media para cada juego
+    const scoresAboveAverage = usersActuales.map((user) => ({
+      ...user,
+      score1dAboveAverage: user.scoregame1d - averageScores[0].avgScoreGame1d,
+      score1iAboveAverage: user.scoregame1i - averageScores[0].avgScoreGame1i,
+      score2dAboveAverage: user.scoregame2d - averageScores[0].avgScoreGame2d,
+      score2iAboveAverage: user.scoregame2i - averageScores[0].avgScoreGame2i,
+      score3dAboveAverage: user.scoregame3d - averageScores[0].avgScoreGame3d,
+      score3iAboveAverage: user.scoregame3i - averageScores[0].avgScoreGame3i,
+    }));
+
+    // Busca al usuario actual en scoresAboveAverage
+    const currentUserScores = scoresAboveAverage.find(user => user._id.equals(userId));
+
+    if (!currentUserScores) {
+      throw new Error('No se encontró al usuario actual');
+    }
+
+    // Extrae los puntajes por encima de la media del usuario actual
+    const userScoreAboveAverage = {
+      score1dAboveAverage: currentUserScores.score1dAboveAverage,
+      score1iAboveAverage: currentUserScores.score1iAboveAverage,
+      score2dAboveAverage: currentUserScores.score2dAboveAverage,
+      score2iAboveAverage: currentUserScores.score2iAboveAverage,
+      score3dAboveAverage: currentUserScores.score3dAboveAverage,
+      score3iAboveAverage: currentUserScores.score3iAboveAverage,
+    };
+
+    // Clasificar usuarios por puntuación en cada juego
+    const sortedUsers1d = sortByScore(scoresAboveAverage, 'score1dAboveAverage', compareNumbers1and3);
+    const rankedUsers1d = assignRanks(sortedUsers1d, 'score1dAboveAverage');
+    const rankingUser1d = rankedUsers1d.find((user) => user._id.equals(userId));
+
+    const sortedUsers1i = sortByScore(scoresAboveAverage, 'score1iAboveAverage', compareNumbers1and3);
+    const rankedUsers1i = assignRanks(sortedUsers1i, 'score1iAboveAverage');
+    const rankingUser1i = rankedUsers1i.find((user) => user._id.equals(userId));
+
+    const sortedUsers2d = sortByScore(scoresAboveAverage, 'score2dAboveAverage', compareNumbers2);
+    const rankedUsers2d = assignRanks(sortedUsers2d, 'score2dAboveAverage');
+    const rankingUser2d = rankedUsers2d.find((user) => user._id.equals(userId));
+
+    const sortedUsers2i = sortByScore(scoresAboveAverage, 'score2iAboveAverage', compareNumbers2);
+    const rankedUsers2i = assignRanks(sortedUsers2i, 'score2iAboveAverage');
+    const rankingUser2i = rankedUsers2i.find((user) => user._id.equals(userId));
+
+    const sortedUsers3d = sortByScore(scoresAboveAverage, 'score3dAboveAverage', compareNumbers1and3);
+    const rankedUsers3d = assignRanks(sortedUsers3d, 'score3dAboveAverage');
+    const rankingUser3d = rankedUsers3d.find((user) => user._id.equals(userId));
+
+    const sortedUsers3i = sortByScore(scoresAboveAverage, 'score3iAboveAverage', compareNumbers1and3);
+    const rankedUsers3i = assignRanks(sortedUsers3i, 'score3iAboveAverage');
+    const rankingUser3i = rankedUsers3i.find((user) => user._id.equals(userId));
+
+    res.render('resultados-generales', { usersActuales, userScoreAboveAverage, averageScores, rankingUser1d, rankingUser1i, rankingUser2d, rankingUser2i, rankingUser3d, rankingUser3i });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+});
+
 module.exports = {server, setupDatabase, collection, client, calculateResultsGame1, calculateResultsGame2, calculateResultsGame3, sortByScore, compareNumbers1and3, compareNumbers2, calculateAge, getHorasUsoTexto};
