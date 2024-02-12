@@ -15,7 +15,7 @@
     <div class="instructions">
       <div class="text-container">
         <p>
-            ¿El móvil es un factor importante en tu día a día? 
+            ¿Es el móvil un factor importante en tu día a día? 
         </p>
         <p>
             ¿Alguna vez has pensado que estabas <em>enganchado</em>?
@@ -42,7 +42,19 @@
 
   <script>
     function startGame() {
-      window.location.href = "/form";
+      // Obtiene el valor de la cookie "userId"
+      var userId = getCookie("userId");
+      if (userId) {
+        window.location.href = "/menu"; // Redirige a /menu si hay un userId en las cookies
+      } else {
+        window.location.href = "/form"; // Redirige a /form si no hay userId en las cookies
+      }
+    }
+
+    // Función para obtener el valor de una cookie por su nombre
+    function getCookie(name) {
+      var cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return cookieValue ? cookieValue.pop() : '';
     }
   </script>
 

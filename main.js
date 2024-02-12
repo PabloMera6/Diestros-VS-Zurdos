@@ -1,7 +1,6 @@
 const { MongoClient, ObjectId } = require("mongodb");
 
 const express = require("express");
-const session = require('express-session');
 const BodyParser = require("body-parser");
 const Cors = require("cors");
 const path = require('path');
@@ -22,13 +21,7 @@ server.use(Cors());
 server.use(cookieParser());
 server.set('view engine', 'ejs');
 
-server.use(session({
-  secret: 'ContraseñaSegura098',
-  resave: false,
-  saveUninitialized: true,
-}));
-
-const client = new MongoClient('mongodb+srv://pabmergom:2002@cluster0.odgnvyk.mongodb.net/', {
+const client = new MongoClient(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -98,7 +91,6 @@ server.post("/form", async (request, response, next) => {
     // Insertar datos en la colección y guardar el id en la sesión
     const result = await collection.insertOne(data);
     const userId = result.insertedId.toString();
-    request.session.userId = userId;
 
     //Añadir a las cookies durante 1 día
     response.cookie('userId', userId, { maxAge: 86400000 });
