@@ -1,4 +1,4 @@
-# Zurdos vs Diestros
+# Diestros vs Zurdos
 Copyright (c) 2024 Pablo Mera Gómez
 
 Todos los derechos reservados.

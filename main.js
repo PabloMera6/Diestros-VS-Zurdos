@@ -44,6 +44,61 @@ setupDatabase("Usuario").then(() => {
   });
 });
 
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
+// Función para obtener los encabezados del CSV basados en las claves de los documentos
+function getCsvHeaders(documents) {
+  const headersSet = new Set();
+  documents.forEach(doc => {
+    Object.keys(doc).forEach(key => headersSet.add(key));
+  });
+  return Array.from(headersSet).map(key => ({ id: key, title: key }));
+}
+
+// Función para convertir los datos de la colección a CSV
+async function exportCollectionToCSV(collectionName) {
+  try {
+    const data = await collection.find({}).toArray();
+    const headers = getCsvHeaders(data);
+
+    const csvWriter = createCsvWriter({
+      path: 'output.csv',
+      header: headers
+    });
+
+    await csvWriter.writeRecords(data);
+    console.log('Los datos han sido exportados a CSV con éxito');
+  } catch (e) {
+    console.error('Error al exportar los datos a CSV', e);
+  }
+}
+
+const fs = require('fs');
+
+server.get('/export', async (req, res) => {
+  try {
+    const outputFilename = 'output.csv';
+    await exportCollectionToCSV('Usuario');
+    
+    const outputPath = path.join(__dirname, outputFilename);
+    
+    fs.access(outputPath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error('Archivo no encontrado:', err);
+        return res.status(404).send('Archivo no encontrado');
+      }
+      
+      res.setHeader('Content-Disposition', 'attachment; filename=' + outputFilename);
+      res.setHeader('Content-Type', 'text/csv');
+      
+      res.sendFile(outputPath);
+    });
+  } catch (e) {
+    console.error('Error al exportar los datos a CSV', e);
+    res.status(500).send('Error al exportar los datos a CSV');
+  }
+});
+
 server.get('/', (req, res) => {
   const indexPath = path.join(__dirname, 'public/index.html');
   res.sendFile(indexPath);
