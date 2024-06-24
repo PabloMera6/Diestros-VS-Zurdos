@@ -14,7 +14,9 @@
   "description": "",
   "version": "1.0.0",
   "main": "main.js",
+  "bin": "main.js",
   "scripts": {
+    "start": "node main.js",
     "test": "jest --forceExit --detectOpenHandles --coverage"
   },
   "keywords": [],
